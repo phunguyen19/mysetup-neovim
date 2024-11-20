@@ -11,7 +11,7 @@ return {
 		nvimtree.setup({
 			view = {
 				width = 35,
-				relativenumber = true,
+				relativenumber = false,
 				adaptive_size = true,
 			},
 			-- change folder arrow icons
