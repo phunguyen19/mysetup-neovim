@@ -40,6 +40,7 @@ return {
 				"gopls",
 				"rust_analyzer",
 				"pbls",
+				"jsonls",
 			},
 		})
 

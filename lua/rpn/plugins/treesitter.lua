@@ -50,6 +50,7 @@ return {
 				"go",
 				"rust",
 				"proto",
+				"json",
 			},
 			incremental_selection = {
 				enable = true,
