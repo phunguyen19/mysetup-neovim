@@ -13,7 +13,10 @@ return {
 
 		telescope.setup({
 			defaults = {
-				path_display = { "smart" },
+				-- Use default config is better than "smart"
+				-- path_display = { "smart" },
+
+				-- Mapping key for nativation
 				mappings = {
 					i = {
 						["<C-k>"] = actions.move_selection_previous, -- move to prev result
@@ -21,7 +24,19 @@ return {
 						["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
 					},
 				},
+
+				-- Customize the width for the window
+				layout_config = {
+					vertical = { width = 0.8 },
+				},
 			},
+
+			-- Config themes, not using anymore, default theme is good
+			-- pickers = {
+			-- 	find_files = {
+			-- 		theme = "dropdown",
+			-- 	},
+			-- },
 		})
 
 		telescope.load_extension("fzf")

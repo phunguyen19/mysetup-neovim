@@ -12,10 +12,16 @@ return {
 		{ "<leader>o", "<cmd>Outline<CR>", desc = "Toggle outline" },
 	},
 	opts = {
+		outline_window = {
+			-- Vim options for the outline window
+			show_numbers = true,
+			show_relative_numbers = true,
+		},
+
 		symbol_folding = {
 			-- Unfold entire symbol tree by default with false, otherwise enter a
 			-- number starting from 1
-			autofold_depth = false,
+			autofold_depth = 1,
 			-- autofold_depth = 1,
 		},
 	},
