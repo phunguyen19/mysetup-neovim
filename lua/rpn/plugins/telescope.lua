@@ -39,6 +39,10 @@ return {
 					preview = true,
 					path_display = { "smart" },
 				},
+				lsp_references = {
+					preview = true,
+					path_display = { "smart" },
+				},
 			},
 		})
 
