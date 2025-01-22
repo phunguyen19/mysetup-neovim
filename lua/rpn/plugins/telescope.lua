@@ -13,6 +13,8 @@ return {
 
 		telescope.setup({
 			defaults = {
+				preview = false,
+
 				-- Use default config is better than "smart"
 				-- path_display = { "smart" },
 
@@ -32,11 +34,12 @@ return {
 			},
 
 			-- Config themes, not using anymore, default theme is good
-			-- pickers = {
-			-- 	find_files = {
-			-- 		theme = "dropdown",
-			-- 	},
-			-- },
+			pickers = {
+				live_grep = {
+					preview = true,
+					path_display = { "smart" },
+				},
+			},
 		})
 
 		telescope.load_extension("fzf")
