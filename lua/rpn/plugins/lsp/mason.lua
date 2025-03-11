@@ -41,6 +41,7 @@ return {
 				"rust_analyzer",
 				"pbls",
 				"jsonls",
+				"yamlls",
 			},
 		})
 
