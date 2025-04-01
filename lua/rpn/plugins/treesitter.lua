@@ -11,6 +11,7 @@ return {
 
 		-- configure treesitter
 		treesitter.setup({
+			modules = {},
 			sync_install = false,
 			auto_install = false,
 			ignore_install = {},
