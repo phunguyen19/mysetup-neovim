@@ -16,6 +16,7 @@ return {
 			-- Vim options for the outline window
 			show_numbers = true,
 			show_relative_numbers = true,
+			width = 20,
 		},
 
 		symbol_folding = {
