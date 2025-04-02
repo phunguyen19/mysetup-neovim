@@ -13,7 +13,7 @@ return {
 
 		telescope.setup({
 			defaults = {
-				preview = false,
+				preview = true,
 
 				-- Use default config is better than "smart"
 				-- path_display = { "smart" },
@@ -30,18 +30,6 @@ return {
 				-- Customize the width for the window
 				layout_config = {
 					vertical = { width = 0.8 },
-				},
-			},
-
-			-- Config themes, not using anymore, default theme is good
-			pickers = {
-				live_grep = {
-					preview = true,
-					path_display = { "smart" },
-				},
-				lsp_references = {
-					preview = true,
-					path_display = { "smart" },
 				},
 			},
 		})
@@ -62,5 +50,6 @@ return {
 		keymap.set("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
 		keymap.set("n", "<leader>fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
 		keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
+		keymap.set("n", "<leader>fld", "<cmd>Telescope diagnostics<cr>", { desc = "Lists Diagnostics" })
 	end,
 }
