@@ -25,22 +25,25 @@ return {
 		})
 
 		mason_lspconfig.setup({
+			automatic_installation = true,
+
 			-- list of servers for mason to install
 			ensure_installed = {
-				"ts_ls",
-				"html",
 				"cssls",
-				"tailwindcss",
-				"svelte",
-				"lua_ls",
-				"graphql",
 				"emmet_ls",
+				"gopls",
+				"graphql",
+				"html",
+				"jsonls",
+				"lua_ls",
+				"pbls",
 				"prismals",
 				"pyright",
-				"gopls",
 				"rust_analyzer",
-				"pbls",
-				"jsonls",
+				"svelte",
+				"tailwindcss",
+				"terraformls",
+				"ts_ls",
 				"yamlls",
 			},
 		})
@@ -53,6 +56,7 @@ return {
 				"black", -- python formatter
 				"pylint", -- python linter
 				"eslint_d", -- js linter
+				"tflint",
 			},
 		})
 	end,
