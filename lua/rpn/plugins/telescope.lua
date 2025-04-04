@@ -10,7 +10,6 @@ return {
 	},
 	config = function()
 		local telescope = require("telescope")
-		local actions = require("telescope.actions")
 
 		telescope.setup({
 			defaults = {
@@ -18,15 +17,6 @@ return {
 
 				-- Use default config is better than "smart"
 				-- path_display = { "smart" },
-
-				-- Mapping key for nativation
-				mappings = {
-					i = {
-						["<C-k>"] = actions.move_selection_previous, -- move to prev result
-						["<C-j>"] = actions.move_selection_next, -- move to next result
-						["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-					},
-				},
 
 				-- Customize the width for the window
 				layout_config = {
@@ -41,17 +31,28 @@ return {
 		-- set keymaps
 		local keymap = vim.keymap -- for conciseness
 
+		-- Telescope files, jump
+		local fuzzyhiddencmd = "<cmd>Telescope find_files find_command=rg,--ignore,--hidden,--files,-u<cr>"
 		keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" })
-		keymap.set(
-			"n",
-			"<leader>fu",
-			"<cmd>Telescope find_files find_command=rg,--ignore,--hidden,--files,-u<cr>",
-			{ desc = "Fuzzy find files in cwd including hidden and ignore files" }
-		)
-		keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy find recent files" })
+		keymap.set("n", "<leader>fu", fuzzyhiddencmd, { desc = "Fuzzy incl. hidden and ignore" })
+		keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy recent files" })
+		keymap.set("n", "<leader>fj", "<cmd>Telescope jumplist<cr>", { desc = "Find jump list" })
+		keymap.set("n", "<leader>fqq", "<cmd>Telescope quickfix<cr>", { desc = "Find quickfix" })
+		keymap.set("n", "<leader>fqh", "<cmd>Telescope quickfixhistory<cr>", { desc = "Find quickfix history" })
+
+		-- Telescope grep
+		local livegrepargs = ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>"
 		keymap.set("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
-		keymap.set("n", "<leader>fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
+		keymap.set("n", "<leader>fg", livegrepargs, { desc = "live_grep_args" })
+
+		-- Telescope buffer
+		local fuzzycurrbuf = "<cmd>Telescope current_buffer_fuzzy_find<cr>"
+		keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Telescope buffers" })
+		keymap.set("n", "<leader>fc", fuzzycurrbuf, { desc = "Fuzzy current buffer" })
+
+		-- Telescope todo
 		keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
-		keymap.set("n", "<leader>fg", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
 	end,
 }
+
+---
