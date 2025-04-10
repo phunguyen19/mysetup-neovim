@@ -44,6 +44,7 @@ return {
 		local livegrepargs = ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>"
 		keymap.set("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
 		keymap.set("n", "<leader>fg", livegrepargs, { desc = "live_grep_args" })
+		keymap.set("n", "<leader>fi", "<cmd>Telescope git_status<cr>", { desc = "Telescope git_status" })
 
 		-- Telescope buffer
 		local fuzzycurrbuf = "<cmd>Telescope current_buffer_fuzzy_find<cr>"
