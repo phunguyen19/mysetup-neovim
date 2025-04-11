@@ -30,7 +30,7 @@ return {
 			-- list of servers for mason to install
 			ensure_installed = {
 				"cssls",
-				"emmet_ls",
+				"eslint",
 				"gopls",
 				"graphql",
 				"html",
@@ -40,8 +40,6 @@ return {
 				"prismals",
 				"pyright",
 				"rust_analyzer",
-				"svelte",
-				"tailwindcss",
 				"terraformls",
 				"ts_ls",
 				"yamlls",
@@ -50,12 +48,9 @@ return {
 
 		mason_tool_installer.setup({
 			ensure_installed = {
+				"eslint_d", -- js linter
 				"prettier", -- prettier formatter
 				"stylua", -- lua formatter
-				"isort", -- python formatter
-				"black", -- python formatter
-				"pylint", -- python linter
-				"eslint_d", -- js linter
 				"tflint",
 			},
 		})
