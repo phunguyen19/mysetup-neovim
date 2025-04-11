@@ -31,6 +31,9 @@ return {
 		-- set keymaps
 		local keymap = vim.keymap -- for conciseness
 
+		-- Keymaps
+		keymap.set("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Find keymaps" })
+
 		-- Files
 		local fuzzyhiddencmd = "<cmd>Telescope find_files find_command=rg,--ignore,--hidden,--files,-u<cr>"
 		keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" })
