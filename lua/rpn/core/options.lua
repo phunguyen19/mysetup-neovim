@@ -1,5 +1,12 @@
 vim.cmd("let g:netrw_liststyle = 3")
 
+-- Custom file types
+vim.filetype.add({
+	extension = {
+		MD = "markdown",
+	},
+})
+
 local opt = vim.opt -- for conciseness
 
 -- line numbers
