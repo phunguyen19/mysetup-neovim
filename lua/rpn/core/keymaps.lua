@@ -40,7 +40,13 @@ end, { desc = "Go to tab position (press number after)" })
 -- Copy file relative
 keymap.set(
 	"n",
-	"<leader>rp",
+	"<leader>pr",
 	[[:let @+ = expand('%')<CR>]],
-	{ noremap = true, silent = true, desc = "[[:let @+ = expand('%')<CR>]] copy relative path" }
+	{ noremap = true, silent = true, desc = "Copy relative path of current file" }
 )
+
+vim.keymap.set("n", "<leader>pa", function()
+	local path = vim.fn.expand("%:p")
+	vim.fn.setreg("+", path)
+	print("Copied: " .. path)
+end, { desc = "Copy absolute path of current file" })
