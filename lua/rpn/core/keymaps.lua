@@ -63,3 +63,8 @@ vim.keymap.set("n", "<leader>pda", function()
 	vim.fn.setreg("+", dir)
 	print("Copied absolute directory: " .. dir)
 end, { desc = "Copy absolute directory of current file" })
+
+-- <leader>po to copy :pwd
+vim.keymap.set("n", "<leader>po", function()
+	vim.fn.setreg("+", vim.fn.getcwd())
+end, { noremap = true, silent = true })

@@ -7,7 +7,6 @@ return {
 		"nvim-tree/nvim-web-devicons",
 		"folke/todo-comments.nvim",
 		"nvim-telescope/telescope-live-grep-args.nvim",
-		"camgraff/telescope-tmux.nvim",
 	},
 	config = function()
 		local telescope = require("telescope")
@@ -27,7 +26,6 @@ return {
 		})
 
 		-- Loading extensions
-		telescope.load_extension("tmux")
 		telescope.load_extension("fzf")
 		telescope.load_extension("live_grep_args")
 
