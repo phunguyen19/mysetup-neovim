@@ -24,6 +24,7 @@ return {
 					parameters = {
 						sync = true,
 					},
+					model = vim.fn.getenv("NVIM_CODECOMPANION_OLLAMA_MODEL"), -- Add model configuration
 				})
 			end,
 		},
