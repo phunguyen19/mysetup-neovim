@@ -6,6 +6,7 @@ function M.apply_code_block()
 	local s_pos = vim.fn.getpos("'<")
 	local e_pos = vim.fn.getpos("'>")
 	local start_line, end_line = s_pos[2], e_pos[2]
+
 	local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
 	if #lines < 3 then
 		return vim.api.nvim_err_writeln("Selection too small")
@@ -23,6 +24,24 @@ function M.apply_code_block()
 	table.remove(lines, 1)
 
 	local function edit_and_write(fn)
+		-- Check if path is relative and convert to absolute if needed
+		if not path:match("^/") then
+			path = vim.fn.fnamemodify(vim.fn.getcwd() .. "/" .. path, ":p")
+		end
+
+		-- Ensure directory exists
+		local dir = vim.fn.fnamemodify(path, ":h")
+		if vim.fn.isdirectory(dir) == 0 then
+			vim.fn.mkdir(dir, "p")
+			print("Created directory: " .. dir)
+		end
+
+		-- Ensure file exists
+		if vim.fn.filereadable(path) == 0 then
+			vim.fn.writefile({}, path)
+			print("Created file: " .. path)
+		end
+
 		vim.cmd("edit " .. path)
 		fn()
 		vim.cmd("write")
@@ -49,11 +68,18 @@ function M.apply_code_block()
 end
 
 function M.setup()
+	-- Create command for applying code blocks
+	vim.api.nvim_create_user_command("AugmentApply", function()
+		-- This will work when text is already selected in visual mode
+		M.apply_code_block()
+	end, { desc = "Apply selected code block to file", range = true })
+
+	-- Create key mapping to apply :'<,'>AugmentApply
 	vim.keymap.set(
 		"v",
 		"<leader>aa",
-		M.apply_code_block,
-		{ noremap = true, silent = true, desc = "Apply selected code-block to file" }
+		":AugmentApply<CR>",
+		{ desc = "Apply selected code block to file", noremap = true, silent = true }
 	)
 end
 
