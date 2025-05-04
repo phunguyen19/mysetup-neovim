@@ -14,8 +14,8 @@ return {
 			})
 
 			-- Chat commands (using different keybindings to avoid conflicts)
-			vim.keymap.set("n", "<leader>cc", ":CopilotChat<CR>", { desc = "Copilot chat" })
-			vim.keymap.set("n", "<leader>ct", ":CopilotChatToggle<CR>", { desc = "Copilot toggle chat" })
+			vim.keymap.set("n", "<leader>acc", ":CopilotChat<CR>", { desc = "Copilot chat" })
+			vim.keymap.set("n", "<leader>act", ":CopilotChatToggle<CR>", { desc = "Copilot toggle chat" })
 		end,
 	},
 	{
@@ -28,10 +28,10 @@ return {
 			vim.g.augment_disable_tab_mapping = true
 
 			-- Chat commands
-			vim.keymap.set("n", "<leader>ac", ":Augment chat<CR>", { desc = "Augment chat" })
-			vim.keymap.set("v", "<leader>ac", ":'<,'>Augment chat<CR>", { noremap = true, silent = true })
-			vim.keymap.set("n", "<leader>an", ":Augment chat-new<CR>", { desc = "Augment new chat" })
-			vim.keymap.set("n", "<leader>at", ":Augment chat-toggle<CR>", { desc = "Augment toggle chat" })
+			vim.keymap.set("n", "<leader>aac", ":Augment chat<CR>", { desc = "Augment chat" })
+			vim.keymap.set("v", "<leader>aac", ":'<,'>Augment chat<CR>", { desc = "Argument chat buffer", noremap = true, silent = true })
+			vim.keymap.set("n", "<leader>aan", ":Augment chat-new<CR>", { desc = "Augment new chat" })
+			vim.keymap.set("n", "<leader>aat", ":Augment chat-toggle<CR>", { desc = "Augment toggle chat" })
 
 			-- Accept completion with Ctrl-y
 			vim.keymap.set("i", "<C-y>", "<cmd>call augment#Accept()<cr>", { desc = "Accept Augment suggestion" })
