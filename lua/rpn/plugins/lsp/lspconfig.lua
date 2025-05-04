@@ -67,22 +67,50 @@ return {
 			end,
 		})
 
-		-- used to enable autocompletion (assign to every lsp server config)
-		local capabilities = cmp_nvim_lsp.default_capabilities()
+		-- 1) start from the “vanilla” LSP capabilities…
+		local default_caps = vim.lsp.protocol.make_client_capabilities()
+		-- 2) feed _that_ into nvim-cmp’s helper…
+		local capabilities = require("cmp_nvim_lsp").default_capabilities(default_caps)
+		-- …and finally force every server to use UTF-16 for offsets:
+		capabilities.offsetEncoding = { "utf-16" }
 
 		-- Change the Diagnostic symbols in the sign column (gutter)
-		-- (not in youtube nvim video)
-		local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-		for type, icon in pairs(signs) do
-			local hl = "DiagnosticSign" .. type
-			vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+		-- local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
+		vim.diagnostic.config({
+			-- signs = {
+			-- 	text = {
+			-- 		[vim.diagnostic.severity.ERROR] = signs.Error,
+			-- 		[vim.diagnostic.severity.WARN] = signs.Warn,
+			-- 		[vim.diagnostic.severity.HINT] = signs.Hint,
+			-- 		[vim.diagnostic.severity.INFO] = signs.Info,
+			-- 	},
+			-- },
+			virtual_text = true, -- Enable virtual text (messages next to code)
+			float = {
+				source = true, -- Show source in floating window
+			},
+			severity_sort = true, -- Sort diagnostics by severity
+		})
+
+		-- Monkey-patch make_position_params to always supply an encoding
+		do
+			local orig = vim.lsp.util.make_position_params
+			vim.lsp.util.make_position_params = function(context, encoding)
+				if not encoding then
+					-- Grab the first attached client’s encoding (or default to utf-16)
+					local clients = vim.lsp.get_clients({ bufnr = 0 })
+					encoding = (clients[1] and clients[1].offset_encoding and clients[1].offset_encoding[1]) or "utf-16"
+				end
+				return orig(context, encoding)
+			end
 		end
 
-		mason_lspconfig.setup_handlers({
-			-- default handler for installed servers
-			function(server_name)
-				lspconfig[server_name].setup({
+		-- mason-lspconfig: every server will now agree on UTF-16
+		require("mason-lspconfig").setup_handlers({
+			function(server_name) -- default handler
+				require("lspconfig")[server_name].setup({
 					capabilities = capabilities,
+					-- you can still pass your on_attach, settings, etc, here
 				})
 			end,
 		})
