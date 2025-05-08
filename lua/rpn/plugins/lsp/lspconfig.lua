@@ -106,12 +106,18 @@ return {
 		end
 
 		-- mason-lspconfig: every server will now agree on UTF-16
-		require("mason-lspconfig").setup_handlers({
+		mason_lspconfig.setup_handlers({
 			function(server_name) -- default handler
 				require("lspconfig")[server_name].setup({
 					capabilities = capabilities,
 					-- you can still pass your on_attach, settings, etc, here
 				})
+			end,
+		})
+
+		lspconfig.eslint.setup({
+			on_attach = function(client)
+				client.server_capabilities.documentFormattingProvider = true
 			end,
 		})
 	end,
