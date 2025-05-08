@@ -29,7 +29,12 @@ return {
 
 			-- Chat commands
 			vim.keymap.set("n", "<leader>ac", ":Augment chat<CR>", { desc = "Augment chat" })
-			vim.keymap.set("v", "<leader>ac", ":Augment chat<CR>", { desc = "Argument chat buffer", noremap = true, silent = true })
+			vim.keymap.set(
+				"v",
+				"<leader>ac",
+				":Augment chat<CR>",
+				{ desc = "Argument chat buffer", noremap = true, silent = true }
+			)
 			vim.keymap.set("n", "<leader>an", ":Augment chat-new<CR>", { desc = "Augment new chat" })
 			vim.keymap.set("n", "<leader>at", ":Augment chat-toggle<CR>", { desc = "Augment toggle chat" })
 
@@ -37,10 +42,22 @@ return {
 			vim.keymap.set("i", "<C-y>", "<cmd>call augment#Accept()<cr>", { desc = "Accept Augment suggestion" })
 
 			-- Setup work space
-			vim.g.augment_workspace_folders = {
-				"~/.config/nvim/",
-				"~/Workspaces/Personal/stacks-core",
-			}
+
+			-- grab the raw string, defaulting to empty
+			-- e.g. "/home/user/workspace:/home/user/other_workspace"
+			local raw = os.getenv("AUGMENT_WORKSPACES") or ""
+
+			-- split on ':' into a Lua table
+			local folders = {}
+			for path in string.gmatch(raw, "[^:]+") do
+				-- expand '~' to $HOME
+				path = vim.fn.expand(path)
+				table.insert(folders, path)
+			end
+
+			if #folders > 0 then
+				vim.g.augment_workspace_folders = folders
+			end
 		end,
 	},
 	{
