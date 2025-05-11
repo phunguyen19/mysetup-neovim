@@ -37,6 +37,7 @@ return {
 				"graphql",
 				"hcl",
 				"html",
+				"http",
 				"javascript",
 				"json",
 				"lua",
