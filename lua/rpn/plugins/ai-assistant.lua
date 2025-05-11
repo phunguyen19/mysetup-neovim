@@ -21,6 +21,9 @@ return {
 	{
 		"augmentcode/augment.vim",
 		config = function()
+			local cwd = vim.loop.cwd()
+			vim.g.augment_workspace_folders = { cwd }
+
 			-- Disable auto-complete to use copilot for auto-complete
 			-- 1) disable the entire suggestion engine:
 			vim.g.augment_disable_completions = true
@@ -40,24 +43,6 @@ return {
 
 			-- Accept completion with Ctrl-y
 			vim.keymap.set("i", "<C-y>", "<cmd>call augment#Accept()<cr>", { desc = "Accept Augment suggestion" })
-
-			-- Setup work space
-
-			-- grab the raw string, defaulting to empty
-			-- e.g. "/home/user/workspace:/home/user/other_workspace"
-			local raw = os.getenv("AUGMENT_WORKSPACES") or ""
-
-			-- split on ':' into a Lua table
-			local folders = {}
-			for path in string.gmatch(raw, "[^:]+") do
-				-- expand '~' to $HOME
-				path = vim.fn.expand(path)
-				table.insert(folders, path)
-			end
-
-			if #folders > 0 then
-				vim.g.augment_workspace_folders = folders
-			end
 		end,
 	},
 	{
