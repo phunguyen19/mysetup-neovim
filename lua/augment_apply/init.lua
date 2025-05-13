@@ -36,29 +36,50 @@ function M.apply_code_block()
 			print("Created directory: " .. dir)
 		end
 
-		-- Ensure file exists
-		if vim.fn.filereadable(path) == 0 then
-			vim.fn.writefile({}, path)
-			print("Created file: " .. path)
-		end
+		-- Save current buffer and window
+		local current_buf = vim.api.nvim_get_current_buf()
+		local current_win = vim.api.nvim_get_current_win()
 
-		vim.cmd("edit " .. path)
-		fn()
-		vim.cmd("write")
+		-- Create a new hidden buffer for the target file
+		local target_buf = vim.fn.bufadd(path)
+		vim.fn.bufload(target_buf)
+
+		-- Apply the changes to the buffer
+		if vim.api.nvim_buf_is_loaded(target_buf) then
+			-- Apply the function to modify the buffer
+			local ok, err = pcall(function()
+				-- Set the buffer as current for the function
+				fn(target_buf)
+
+				-- Write the buffer to disk
+				if vim.api.nvim_buf_get_option(target_buf, "modified") then
+					vim.api.nvim_buf_call(target_buf, function()
+						vim.cmd("silent write")
+					end)
+				end
+			end)
+
+			if not ok then
+				vim.api.nvim_err_writeln("Error applying changes: " .. err)
+			end
+		else
+			vim.api.nvim_err_writeln("Failed to load buffer for " .. path)
+		end
 	end
 
+	-- Update the mode handlers to work with the new approach
 	if mode == "EDIT" then
-		edit_and_write(function()
-			vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+		edit_and_write(function(buf)
+			vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 		end)
 	elseif mode == "APPEND" then
-		edit_and_write(function()
-			local last = vim.api.nvim_buf_line_count(0)
-			vim.api.nvim_buf_set_lines(0, last, last, false, lines)
+		edit_and_write(function(buf)
+			local last = vim.api.nvim_buf_line_count(buf)
+			vim.api.nvim_buf_set_lines(buf, last, last, false, lines)
 		end)
 	elseif mode == "PREPEND" then
-		edit_and_write(function()
-			vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
+		edit_and_write(function(buf)
+			vim.api.nvim_buf_set_lines(buf, 0, 0, false, lines)
 		end)
 	else
 		return vim.api.nvim_err_writeln("Unknown mode: " .. mode)
