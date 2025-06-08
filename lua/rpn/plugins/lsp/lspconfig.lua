@@ -105,20 +105,95 @@ return {
 			end
 		end
 
-		-- mason-lspconfig: every server will now agree on UTF-16
-		-- mason_lspconfig.setup_handlers({
-		-- 	function(server_name) -- default handler
-		-- 		lspconfig[server_name].setup({
-		-- 			capabilities = capabilities,
-		-- 			-- you can still pass your on_attach, settings, etc, here
-		-- 		})
-		-- 	end,
-		-- })
-
 		lspconfig.eslint.setup({
-			on_attach = function(client)
+			on_attach = function(client, bufnr)
 				client.server_capabilities.documentFormattingProvider = true
+
+				-- Disable eslint as formatter if you're using prettier through conform.nvim
+				if vim.fn.executable("prettier") == 1 then
+					client.server_capabilities.documentFormattingProvider = false
+				end
+
+				-- Force ESLint to run on save
+				vim.api.nvim_create_autocmd("BufWritePre", {
+					buffer = bufnr,
+					callback = function()
+						vim.cmd("EslintFixAll")
+					end,
+				})
 			end,
+			settings = {
+				workingDirectory = { mode = "auto" }, -- Try "auto" again
+				format = true,
+				codeActionOnSave = {
+					enable = true,
+					mode = "all",
+				},
+				-- More comprehensive root patterns
+				rootDirectory = {
+					".eslintrc",
+					".eslintrc.js",
+					".eslintrc.json",
+					".eslintrc.yaml",
+					".eslintrc.yml",
+					"package.json",
+				},
+				-- Add this to help with config discovery
+				useESLintClass = false,
+				experimental = {
+					useFlatConfig = false,
+				},
+			},
+			filetypes = {
+				"javascript",
+				"javascriptreact",
+				"javascript.jsx",
+				"typescript",
+				"typescriptreact",
+				"typescript.tsx",
+				"vue",
+				"svelte",
+			},
+			-- Add this to help with project root detection
+			root_dir = require("lspconfig.util").find_git_ancestor,
 		})
+
+		-- Add this near the end of the config function
+		vim.api.nvim_create_user_command("ESLintDebug", function()
+			local bufnr = vim.api.nvim_get_current_buf()
+			local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "eslint" })
+
+			if #clients == 0 then
+				print("No ESLint client attached to this buffer")
+				return
+			end
+
+			local client = clients[1]
+			print("ESLint client ID: " .. client.id)
+			print("Root directory: " .. client.config.root_dir)
+			print("Workspace folders: ")
+			for _, folder in ipairs(client.workspace_folders or {}) do
+				print("  - " .. folder.name)
+			end
+
+			-- Try to find eslint config files
+			local possible_configs = {
+				".eslintrc",
+				".eslintrc.js",
+				".eslintrc.json",
+				".eslintrc.yaml",
+				".eslintrc.yml",
+			}
+
+			print("Searching for ESLint config files:")
+			for _, config in ipairs(possible_configs) do
+				local config_path = client.config.root_dir .. "/" .. config
+				if vim.fn.filereadable(config_path) == 1 then
+					print("  - Found: " .. config_path)
+				else
+					print("  - Not found: " .. config_path)
+				end
+			end
+		end, {})
 	end,
 }
