@@ -1,11 +1,21 @@
 return {
 	{
+		"savq/melange-nvim",
+		priority = 1000,
+	},
+	{
 		"rebelot/kanagawa.nvim",
 		priority = 1000, -- Load before other plugins
 	},
 	{
-		"savq/melange-nvim",
+		"catppuccin/nvim",
+		name = "catppuccin",
 		priority = 1000,
+		opts = {
+			flavour = "macchiato", -- choose between latte, frappe, macchiato, mocha
+			transparent_background = true, -- disable setting background color
+			show_end_of_buffer = true,
+		},
 	},
 	{
 		"folke/tokyonight.nvim",
