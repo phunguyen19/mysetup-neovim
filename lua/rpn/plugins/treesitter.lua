@@ -47,6 +47,7 @@ return {
 				"proto",
 				"query",
 				"rust",
+				"sql",
 				"svelte",
 				"tsx",
 				"typescript",
