@@ -1,7 +1,8 @@
 require("rpn.core")
 require("rpn.lazy")
 
--- Set colorscheme to melange
+vim.o.termguicolors = true
+
 vim.cmd("colorscheme melange")
 
 -- Make background transparent
