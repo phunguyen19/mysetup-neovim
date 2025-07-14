@@ -30,12 +30,27 @@ keymap.set("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close current tab" 
 keymap.set("n", "<leader>tn", "<cmd>tabn<CR>", { desc = "Go to next tab" }) --  go to next tab
 keymap.set("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" }) --  go to previous tab
 keymap.set("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer in new tab" }) --  move current buffer to new tab
+
+-- switch to a specific tab by number.
+-- e.g. <leader>t2 to switch to tab 2
+-- limit: 1-9, otherwise it will not work
 keymap.set("n", "<leader>t", function()
 	local tab_number = tonumber(vim.fn.getcharstr()) -- Get user input for tab number
 	if tab_number then
 		vim.cmd(tab_number .. "tabnext") -- Execute tab switch command
 	end
 end, { desc = "Go to tab position (press number after)" })
+
+-- move current tab to a specific position
+-- e.g. <leader>tm2 to move current tab to position 2
+vim.keymap.set("n", "<leader>tm", function()
+	-- use a count if given, otherwise ask
+	local idx = vim.v.count
+	if idx == 0 then
+		idx = tonumber(vim.fn.input("Move tab to: ")) or 0
+	end
+	vim.cmd("tabm " .. idx)
+end, { silent = true, noremap = true })
 
 -- Copy file relative
 keymap.set(

@@ -1,5 +1,29 @@
--- lua/augment_apply/init.lua
--- your module; returns a table with `setup()` and `apply_code_block()`
+-- Augment.nvim: A Neovim plugin for applying code blocks of AugmentCode to files
+--
+-- This plugin allows you to select a code block in visual mode and apply it to a file.
+-- It supports different modes like EDIT, APPEND, and PREPEND.
+--
+-- Usage:
+-- 1. Select a code block in visual mode.
+-- 2. Use the command `:AugmentApply` or the key mapping `<leader>aa` to apply the code block.
+--
+-- This plugin will read the metadata from the first line of the selected code block,
+--    check the mode, and apply the changes to the specified file.
+--
+-- This plugin is designed to work with AugmentCode, a tool for managing code blocks.
+--
+-- Lazy installation:
+-- {
+-- 	-- point at your local plugin folder
+-- 	dir = vim.fn.stdpath("config") .. "/lua/augment_apply",
+-- 	name = "augment_apply",
+-- 	lazy = false,
+-- 	priority = 1000, -- load early
+-- 	config = function()
+-- 		require("augment_apply").setup()
+-- 	end,
+-- },
+
 local M = {}
 
 function M.apply_code_block()
