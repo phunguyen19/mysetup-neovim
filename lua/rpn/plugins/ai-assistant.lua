@@ -1,9 +1,11 @@
 return {
 	{
 		"github/copilot.vim",
+		enabled = false,
 	},
 	{
 		"CopilotC-Nvim/CopilotChat.nvim",
+		enabled = false,
 		dependencies = {
 			{ "github/copilot.vim" },
 			{ "nvim-lua/plenary.nvim" },
@@ -20,6 +22,7 @@ return {
 	},
 	{
 		"augmentcode/augment.vim",
+		enabled = false,
 		config = function()
 			local cwd = vim.loop.cwd()
 			vim.g.augment_workspace_folders = { cwd }
@@ -47,6 +50,7 @@ return {
 	},
 	{
 		-- point at your local plugin folder
+		enabled = false,
 		dir = vim.fn.stdpath("config") .. "/lua/augment_apply",
 		name = "augment_apply",
 		lazy = false,
