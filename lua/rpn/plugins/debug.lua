@@ -35,7 +35,9 @@ return {
 		-- Setup Mason DAP adapter if available
 		local has_mason, mason_dap = pcall(require, "mason-nvim-dap")
 		if has_mason and mason_dap.setup then
-			mason_dap.setup()
+			mason_dap.setup({
+				ensure_installed = { "node-debug2-adapter" },
+			})
 		end
 
 		-- Adapter for Node.js (node-debug2)
