@@ -11,17 +11,17 @@ return {
 
 			local wk = vim.keymap.set
 			-- Switch worktree: Telescope picker
-			wk("n", "<leader>gw", function()
+			wk("n", "<leader>gww", function()
 				require("telescope").extensions.git_worktree.git_worktrees()
 			end, { desc = "🔀 Switch Git worktree" })
 
 			-- Create new worktree: Telescope picker
-			wk("n", "<leader>gn", function()
+			wk("n", "<leader>gwn", function()
 				require("telescope").extensions.git_worktree.create_git_worktree()
 			end, { desc = "➕ New Git worktree" })
 
 			-- Delete worktree: Telescope picker
-			wk("n", "<leader>gd", function()
+			wk("n", "<leader>gwd", function()
 				require("telescope").extensions.git_worktree.delete_git_worktree()
 			end, { desc = "🗑️  Delete Git worktree" })
 		end,
