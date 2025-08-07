@@ -13,6 +13,13 @@ return {
       },
 			opts = {},
 		},
+		{
+			"leoluz/nvim-dap-go",
+			ft = { "go" },
+			config = function()
+				require("dap-go").setup() -- this registers the Go adapter & sensible defaults
+			end,
+		},
 		-- virtual text for the debugger
 		-- { "theHamsta/nvim-dap-virtual-text", opts = {} },
 	},
@@ -49,7 +56,7 @@ return {
 			})
 		end
 
-		-- Adapter for Node.js (node-debug2)
+		-- DAP javscript/typescript
 		dap.adapters.node2 = {
 			type = "executable",
 			command = "node",
@@ -57,11 +64,9 @@ return {
 				vim.fn.stdpath("data") .. "/mason/packages/node-debug2-adapter/out/src/nodeDebug.js",
 			},
 		}
-
-		-- TypeScript/JavaScript configurations
 		dap.configurations.typescript = {
 			{
-				name = "Launch via npm:dev:debug",
+				name = "[NodeJS] Launch via npm:dev:debug",
 				type = "node2",
 				request = "launch",
 				cwd = vim.fn.getcwd(),
@@ -73,7 +78,7 @@ return {
 				protocol = "inspector",
 			},
 			{
-				name = "Attach to process",
+				name = "[NodeJS] Attach to process",
 				type = "node2",
 				request = "attach",
 				processId = require("dap.utils").pick_process,
@@ -83,6 +88,38 @@ return {
 			},
 		}
 		dap.configurations.javascript = dap.configurations.typescript
+
+		-- DAP go
+		dap.adapters.go = {
+			type = "server",
+			port = "${port}",
+			executable = {
+				command = "dlv",
+				args = { "dap", "-l", "127.0.0.1:${port}" },
+			},
+		}
+		dap.configurations.go = {
+			{
+				type = "go",
+				name = "[Go] Launch and Debug Current File",
+				request = "launch",
+				program = "${file}",
+			},
+			{
+				type = "go",
+				name = "[Go] Launch and Debug Current Package Tests",
+				request = "launch",
+				mode = "test",
+				program = "${fileDirname}",
+			},
+			{
+				type = "go",
+				name = "[Go] Attach to Process",
+				request = "attach",
+				processId = require("dap.utils").pick_process,
+				mode = "local",
+			},
+		}
 
 		-- Define signs for DAP if not already defined
 		-- Define signs for DAP (breakpoints, logpoints, etc.)
