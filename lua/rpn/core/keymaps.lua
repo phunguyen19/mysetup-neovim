@@ -57,7 +57,7 @@ vim.keymap.set(
 	"n",
 	"<leader>pr",
 	[[:let @+ = expand('%') | echo 'Copied: ' . expand('%')<CR>]],
-	{ noremap = true, desc = "Copy & echo relative path of current file" }
+	{ noremap = true, desc = "Copy relative path of current file" }
 )
 
 vim.keymap.set("n", "<leader>pa", function()
