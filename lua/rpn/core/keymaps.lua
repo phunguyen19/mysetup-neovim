@@ -53,11 +53,11 @@ vim.keymap.set("n", "<leader>tm", function()
 end, { silent = true, noremap = true })
 
 -- Copy file relative
-keymap.set(
+vim.keymap.set(
 	"n",
 	"<leader>pr",
-	[[:let @+ = expand('%')<CR>]],
-	{ noremap = true, silent = true, desc = "Copy relative path of current file" }
+	[[:let @+ = expand('%') | echo 'Copied: ' . expand('%')<CR>]],
+	{ noremap = true, desc = "Copy & echo relative path of current file" }
 )
 
 vim.keymap.set("n", "<leader>pa", function()

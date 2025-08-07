@@ -13,8 +13,17 @@ return {
 				folder_open = "",
 			},
 			file_panel = {
-				position = "left", -- one of: "left", "right", "top", "bottom"
-				width = 35, -- only applies when position is left or right
+				listing_style = "tree", -- (optional) 'list' or 'tree'
+				tree_options = { -- (optional) when using 'tree'
+					flatten_dirs = true,
+					folder_statuses = "only_folded",
+				},
+				win_config = { -- ← everything goes in here now
+					position = "bottom", -- 'left' | 'right' | 'top' | 'bottom'
+					width = 40, -- width when pos='left' or 'right'
+					height = 16, -- height when pos='top'  or 'bottom'
+					win_opts = {}, -- any `nvim_win_set_*` opts you like
+				},
 			},
 		})
 

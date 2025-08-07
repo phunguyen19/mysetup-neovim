@@ -9,16 +9,6 @@ return {
 			-- load the Telescope extension
 			require("telescope").load_extension("git_worktree")
 
-			local Worktree = require("git-worktree")
-			local api = require("nvim-tree.api")
-
-			Worktree.on_tree_change(function(op, metadata)
-				if op == Worktree.Operations.Switch then
-					-- update the tree’s root to the new worktree path
-					api.tree.change_root({ path = metadata.path })
-				end
-			end)
-
 			local wk = vim.keymap.set
 			-- Switch worktree: Telescope picker
 			wk("n", "<leader>gww", function()
