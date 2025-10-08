@@ -129,15 +129,7 @@ return {
 					enable = true,
 					mode = "all",
 				},
-				-- More comprehensive root patterns
-				rootDirectory = {
-					".eslintrc",
-					".eslintrc.js",
-					".eslintrc.json",
-					".eslintrc.yaml",
-					".eslintrc.yml",
-					"package.json",
-				},
+
 				-- Add this to help with config discovery
 				useESLintClass = false,
 				experimental = {
