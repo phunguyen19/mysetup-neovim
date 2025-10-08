@@ -7,9 +7,6 @@ return {
 		shade_terminals = false,
 	},
 	keys = {
-		{ "<leader>teh", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Terminal (horizontal)" },
-		{ "<leader>tev", "<cmd>ToggleTerm direction=vertical<cr>", desc = "Terminal (vertical)" },
-		{ "<leader>tef", "<cmd>ToggleTerm direction=float<cr>", desc = "Terminal (float)" },
-		{ "<leader>tet", "<cmd>ToggleTerm direction=tab<cr>", desc = "Terminal (tab)" },
+		{ "<leader>tt", "<cmd>ToggleTerm direction=float<cr>", desc = "Terminal (float)" },
 	},
 }
