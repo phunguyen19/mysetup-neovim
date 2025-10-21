@@ -28,7 +28,7 @@ return {
 					return
 				end
 				return {
-					lsp_fallback = false,
+					lsp_fallback = true,
 					async = false,
 					timeout_ms = 1000,
 				}
@@ -53,6 +53,14 @@ return {
 		end, {
 			desc = "Re-enable autoformat-on-save",
 		})
+
+		vim.api.nvim_create_user_command("Format", function()
+			conform.format({
+				lsp_fallback = true,
+				async = false,
+				timeout_ms = 1000,
+			})
+		end, { desc = "Format file or range (in visual mode)" })
 
 		vim.keymap.set({ "n", "v" }, "<leader>mp", function()
 			conform.format({
