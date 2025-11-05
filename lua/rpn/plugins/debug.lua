@@ -56,7 +56,7 @@ return {
 			})
 		end
 
-		-- DAP javscript/typescript
+		-- DAP javascript/typescript
 		dap.adapters.node2 = {
 			type = "executable",
 			command = "node",

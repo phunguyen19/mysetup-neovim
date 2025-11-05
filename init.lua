@@ -22,3 +22,7 @@ vim.cmd([[
   hi VertSplit    guibg=NONE ctermbg=NONE
   hi StatusLineNC guibg=NONE ctermbg=NONE
 ]])
+
+-- enable spell check
+vim.opt.spell = true
+vim.opt.spelllang = "en_us"
