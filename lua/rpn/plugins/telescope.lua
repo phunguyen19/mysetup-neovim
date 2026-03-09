@@ -20,8 +20,9 @@ return {
 				-- path_display = { "smart" },
 
 				-- Customize the width for the window
+				layout_strategy = "horizontal",
 				layout_config = {
-					vertical = { width = 0.8 },
+					horizontal = { width = 0.8 },
 				},
 			},
 		})
