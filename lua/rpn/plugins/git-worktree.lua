@@ -361,32 +361,6 @@ local function delete_worktree(wt)
       end, 100)
     end
 
-    local function delete_branch()
-      if not wt.branch then
-        post_delete()
-        return
-      end
-      local _, branch_err = git_cmd({ "branch", "-d", wt.branch })
-      if branch_err then
-        vim.ui.select({ "Force delete branch", "Keep branch" }, {
-          prompt = "Branch not fully merged. " .. branch_err,
-        }, function(branch_choice)
-          if branch_choice == "Force delete branch" then
-            local _, force_branch_err = git_cmd({ "branch", "-D", wt.branch })
-            if force_branch_err then
-              notify("Failed to delete branch: " .. force_branch_err, vim.log.levels.ERROR)
-            else
-              notify("Branch deleted: " .. wt.branch)
-            end
-          end
-          post_delete()
-        end)
-      else
-        notify("Branch deleted: " .. wt.branch)
-        post_delete()
-      end
-    end
-
     local _, err = git_cmd({ "worktree", "remove", wt.path })
     if err then
       vim.ui.select({ "Force delete", "Cancel" }, {
@@ -398,7 +372,7 @@ local function delete_worktree(wt)
             notify("Force delete failed: " .. force_err, vim.log.levels.ERROR)
           else
             notify("Worktree deleted (forced): " .. wt.path)
-            delete_branch()
+            post_delete()
           end
         end
       end)
@@ -406,7 +380,7 @@ local function delete_worktree(wt)
     end
 
     notify("Worktree deleted: " .. wt.path)
-    delete_branch()
+    post_delete()
   end)
 end
 
