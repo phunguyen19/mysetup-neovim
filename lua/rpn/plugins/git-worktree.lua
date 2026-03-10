@@ -144,7 +144,7 @@ local function do_switch(path)
   local ok = pcall(vim.cmd, "silent! AutoSession restore")
   if not ok then
     -- Fall back to file explorer or empty buffer
-    if pcall(vim.cmd, "NvimTreeOpen") then
+    if pcall(vim.cmd, "NvimTreeOpen " .. vim.fn.fnameescape(path)) then
       -- file explorer opened
     else
       vim.cmd("enew")
@@ -153,9 +153,10 @@ local function do_switch(path)
 
   vim.o.cmdheight = saved_cmdheight
 
-  -- Open file explorer after switch
+  -- Open file explorer after switch, passing path so NvimTree uses the new root
   vim.defer_fn(function()
-    pcall(vim.cmd, "NvimTreeOpen")
+    pcall(vim.cmd, "NvimTreeClose")
+    pcall(vim.cmd, "NvimTreeOpen " .. vim.fn.fnameescape(path))
     pcall(vim.cmd, "LspRestart")
   end, 200)
 
