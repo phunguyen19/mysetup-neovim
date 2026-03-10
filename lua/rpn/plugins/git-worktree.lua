@@ -2,10 +2,15 @@
 -- Uses auto-session for session save/restore during worktree switches
 
 ---@param args string[]
+---@param opts? { cwd?: string }
 ---@return string[]|nil, string|nil
-local function git_cmd(args)
+local function git_cmd(args, opts)
   local cmd = vim.list_extend({ "git" }, args)
-  local result = vim.system(cmd, { text = true }):wait()
+  local sys_opts = { text = true }
+  if opts and opts.cwd then
+    sys_opts.cwd = opts.cwd
+  end
+  local result = vim.system(cmd, sys_opts):wait()
   if result.code ~= 0 then
     return nil, vim.trim(result.stderr or result.stdout or "unknown error")
   end
@@ -19,6 +24,47 @@ local function get_git_root()
     return nil
   end
   return result[1]
+end
+
+---@param git_root string
+local function get_existing_ignored_files(git_root)
+  local lines = git_cmd(
+    { "ls-files", "--ignored", "--exclude-standard", "--others", "--directory" },
+    { cwd = git_root }
+  )
+  if not lines then
+    return {}
+  end
+  -- Remove trailing slashes from directory entries for consistent display
+  local items = {}
+  for _, line in ipairs(lines) do
+    local cleaned = line:gsub("/$", "")
+    if cleaned ~= "" then
+      table.insert(items, cleaned)
+    end
+  end
+  return items
+end
+
+local function copy_items_to_worktree(source_root, dest_path, items)
+  local failed = {}
+  for _, item in ipairs(items) do
+    -- Reject path traversal or absolute paths
+    if item:match("%.%.") or item:match("^/") then
+      table.insert(failed, item)
+    else
+      local src = source_root .. "/" .. item
+      local dst = dest_path .. "/" .. item
+      -- Ensure parent directory exists
+      local parent = vim.fn.fnamemodify(dst, ":h")
+      vim.fn.mkdir(parent, "p")
+      local result = vim.system({ "cp", "-a", src, dst }, { text = true }):wait()
+      if result.code ~= 0 then
+        table.insert(failed, item)
+      end
+    end
+  end
+  return failed
 end
 
 local function parse_worktrees()
@@ -141,30 +187,32 @@ local function create_worktree()
     return
   end
 
-  vim.ui.input({ prompt = "Branch name: " }, function(branch)
-    if not branch or branch == "" then
+  local parent_dir = vim.fn.fnamemodify(git_root, ":h")
+
+  vim.ui.input({ prompt = "Worktree path: ", default = parent_dir .. "/" }, function(path)
+    if not path or path == "" then
       return
     end
 
-    -- Strip origin/ prefix if present
-    local local_branch = branch:gsub("^origin/", "")
-
-    if not is_valid_branch_name(local_branch) then
-      notify("Invalid branch name: " .. local_branch, vim.log.levels.ERROR)
+    if vim.fn.isdirectory(path) == 1 then
+      notify("Path already exists: " .. path, vim.log.levels.ERROR)
       return
     end
 
-    local sanitized = local_branch:gsub("[/%s]+", "-")
-    local parent_dir = vim.fn.fnamemodify(git_root, ":h")
-    local default_path = parent_dir .. "/" .. sanitized
+    -- Derive default branch name from folder basename
+    local basename = vim.fn.fnamemodify(path, ":t")
+    local default_branch = basename:gsub("[%s]+", "-")
 
-    vim.ui.input({ prompt = "Worktree path: ", default = default_path }, function(path)
-      if not path or path == "" then
+    vim.ui.input({ prompt = "Branch name: ", default = default_branch }, function(branch)
+      if not branch or branch == "" then
         return
       end
 
-      if vim.fn.isdirectory(path) == 1 then
-        notify("Path already exists: " .. path, vim.log.levels.ERROR)
+      -- Strip origin/ prefix if present
+      local local_branch = branch:gsub("^origin/", "")
+
+      if not is_valid_branch_name(local_branch) then
+        notify("Invalid branch name: " .. local_branch, vim.log.levels.ERROR)
         return
       end
 
@@ -189,10 +237,98 @@ local function create_worktree()
 
       notify("Created worktree: " .. path)
 
-      vim.ui.select({ "Yes", "No" }, { prompt = "Switch to new worktree?" }, function(choice)
-        if choice == "Yes" then
-          switch_worktree(path)
+      local function offer_switch()
+        vim.ui.select({ "Yes", "No" }, { prompt = "Switch to new worktree?" }, function(choice)
+          if choice == "Yes" then
+            switch_worktree(path)
+          end
+        end)
+      end
+
+      local ignored = get_existing_ignored_files(git_root)
+      if #ignored == 0 then
+        offer_switch()
+        return
+      end
+
+      vim.ui.select({ "Yes", "No" }, {
+        prompt = string.format("Copy ignored files to new worktree? (%d found)", #ignored),
+      }, function(copy_choice)
+        if copy_choice ~= "Yes" then
+          offer_switch()
+          return
         end
+
+        -- Use telescope multi-select picker for ignored files
+        local ok_telescope, _ = pcall(require, "telescope")
+        if not ok_telescope then
+          -- Fallback: copy all ignored files
+          local failed = copy_items_to_worktree(git_root, path, ignored)
+          if #failed > 0 then
+            notify("Failed to copy: " .. table.concat(failed, ", "), vim.log.levels.WARN)
+          else
+            notify(string.format("Copied %d ignored item(s)", #ignored))
+          end
+          offer_switch()
+          return
+        end
+
+        local pickers = require("telescope.pickers")
+        local finders = require("telescope.finders")
+        local conf = require("telescope.config").values
+        local actions = require("telescope.actions")
+        local action_state = require("telescope.actions.state")
+
+        pickers
+          .new({}, {
+            prompt_title = "Select ignored files to copy (Tab to toggle, Enter to confirm)",
+            finder = finders.new_table({ results = ignored }),
+            sorter = conf.generic_sorter({}),
+            attach_mappings = function(prompt_bufnr, map)
+              actions.select_default:replace(function()
+                local picker = action_state.get_current_picker(prompt_bufnr)
+                local selections = picker:get_multi_selection()
+                actions.close(prompt_bufnr)
+
+                local to_copy
+                if #selections > 0 then
+                  to_copy = vim.tbl_map(function(e) return e[1] end, selections)
+                else
+                  -- No multi-selection: copy the single highlighted entry
+                  local entry = action_state.get_selected_entry()
+                  if entry then
+                    to_copy = { entry[1] }
+                  end
+                end
+
+                if not to_copy or #to_copy == 0 then
+                  offer_switch()
+                  return
+                end
+
+                notify(string.format("Copying %d item(s)...", #to_copy))
+                local failed = copy_items_to_worktree(git_root, path, to_copy)
+                if #failed > 0 then
+                  notify("Failed to copy: " .. table.concat(failed, ", "), vim.log.levels.WARN)
+                else
+                  notify(string.format("Copied %d ignored item(s)", #to_copy))
+                end
+                offer_switch()
+              end)
+
+              -- Handle picker dismissal so the switch prompt still appears
+              local function on_dismiss()
+                actions.close(prompt_bufnr)
+                offer_switch()
+              end
+              map("i", "<Esc>", on_dismiss)
+              map("n", "q", on_dismiss)
+              map("n", "<Esc>", on_dismiss)
+
+              return true
+            end,
+          })
+          :find()
       end)
     end)
   end)
