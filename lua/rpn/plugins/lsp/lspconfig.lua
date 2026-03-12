@@ -84,7 +84,7 @@ return {
 
 		-- Use the new vim.lsp.config API instead of lspconfig
 		vim.lsp.config("eslint", {
-			cmd = { "eslint_d" },
+			cmd = { "vscode-eslint-language-server", "--stdio" },
 			filetypes = {
 				"javascript",
 				"javascriptreact",
@@ -103,6 +103,7 @@ return {
 					mode = "all",
 				},
 				useESLintClass = false,
+				useFlatConfig = false,
 				experimental = {
 					useFlatConfig = false,
 				},
