@@ -108,20 +108,6 @@ return {
 					useFlatConfig = false,
 				},
 			},
-			on_attach = function(client, bufnr)
-				client.server_capabilities.documentFormattingProvider = true
-
-				if vim.fn.executable("prettier") == 1 then
-					client.server_capabilities.documentFormattingProvider = false
-				end
-
-				vim.api.nvim_create_autocmd("BufWritePre", {
-					buffer = bufnr,
-					callback = function()
-						vim.cmd("EslintFixAll")
-					end,
-				})
-			end,
 			capabilities = capabilities,
 		})
 
