@@ -40,7 +40,8 @@ return {
 
 		-- Files
 		local fuzzyhiddencmd = "<cmd>Telescope find_files find_command=rg,--ignore,--hidden,--files,-u<cr>"
-		keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" })
+		local fuzzyfindcmd = "<cmd>Telescope find_files hidden=true find_command=rg,--files,--hidden,--glob,!.git<cr>"
+		keymap.set("n", "<leader>ff", fuzzyfindcmd, { desc = "Fuzzy find files in cwd (respects .gitignore only)" })
 		keymap.set("n", "<leader>fu", fuzzyhiddencmd, { desc = "Fuzzy incl. hidden and ignore" })
 		keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy recent files" })
 
@@ -52,9 +53,15 @@ return {
 		keymap.set("n", "<leader>fqh", "<cmd>Telescope quickfixhistory<cr>", { desc = "Find quickfix history" })
 
 		-- Grep
-		local livegrepargs = ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>"
-		keymap.set("n", "<leader>fgg", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
-		keymap.set("n", "<leader>fga", livegrepargs, { desc = "live_grep_args" })
+		local grep_extra_args = function()
+			return { "--hidden", "--glob", "!.git" }
+		end
+		keymap.set("n", "<leader>fgg", function()
+			require("telescope.builtin").live_grep({ additional_args = grep_extra_args })
+		end, { desc = "Find string in cwd (respects .gitignore only)" })
+		keymap.set("n", "<leader>fga", function()
+			require("telescope").extensions.live_grep_args.live_grep_args({ additional_args = grep_extra_args })
+		end, { desc = "live_grep_args (respects .gitignore only)" })
 
 		-- Git
 		keymap.set("n", "<leader>fgs", "<cmd>Telescope git_status<cr>", { desc = "Telescope git_status" })
