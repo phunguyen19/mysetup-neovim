@@ -82,6 +82,28 @@ return {
 			end
 		end
 
+		local biome_util = require("rpn.utils.biome")
+
+		-- Biome LSP: attaches only in projects with biome.json(c)
+		vim.lsp.config("biome", {
+			cmd = { "biome", "lsp-proxy" },
+			filetypes = {
+				"javascript",
+				"javascriptreact",
+				"javascript.jsx",
+				"typescript",
+				"typescriptreact",
+				"typescript.tsx",
+				"json",
+				"jsonc",
+				"css",
+			},
+			root_markers = { "biome.json", "biome.jsonc" },
+			capabilities = capabilities,
+		})
+
+		vim.lsp.enable("biome")
+
 		-- Use the new vim.lsp.config API instead of lspconfig
 		vim.lsp.config("eslint", {
 			cmd = { "vscode-eslint-language-server", "--stdio" },
@@ -95,7 +117,28 @@ return {
 				"vue",
 				"svelte",
 			},
-			root_markers = { ".eslintrc", ".eslintrc.js", ".eslintrc.json", "eslint.config.js" },
+			root_dir = function(bufnr, on_dir)
+				if biome_util.is_biome_project(bufnr) then
+					return
+				end
+				local name = vim.api.nvim_buf_get_name(bufnr)
+				local search_path = name ~= "" and vim.fs.dirname(name) or vim.uv.cwd()
+				local found = vim.fs.find({
+					".eslintrc",
+					".eslintrc.js",
+					".eslintrc.cjs",
+					".eslintrc.json",
+					".eslintrc.yaml",
+					".eslintrc.yml",
+					"eslint.config.js",
+					"eslint.config.mjs",
+					"eslint.config.cjs",
+					"eslint.config.ts",
+				}, { upward = true, path = search_path, type = "file" })
+				if #found > 0 then
+					on_dir(vim.fs.dirname(found[1]))
+				end
+			end,
 			settings = {
 				workingDirectory = { mode = "auto" },
 				codeActionOnSave = {

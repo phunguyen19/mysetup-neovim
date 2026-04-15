@@ -4,16 +4,22 @@ return {
   config = function()
     local conform = require("conform")
 
+    local pick_js = function(bufnr)
+      return require("rpn.utils.biome").is_biome_project(bufnr)
+          and { "biome" } or { "prettier" }
+    end
+
     conform.setup({
       formatters_by_ft = {
-        javascript = { "prettier" },
-        typescript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescriptreact = { "prettier" },
+        javascript = pick_js,
+        typescript = pick_js,
+        javascriptreact = pick_js,
+        typescriptreact = pick_js,
+        json = pick_js,
+        jsonc = pick_js,
+        css = pick_js,
         svelte = { "prettier" },
-        css = { "prettier" },
         html = { "prettier" },
-        json = { "prettier" },
         yaml = { "prettier" },
         markdown = { "prettier" },
         graphql = { "prettier" },
