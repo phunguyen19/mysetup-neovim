@@ -28,6 +28,37 @@ This is a Neovim configuration written in Lua, organized under the `rpn` namespa
 - Uses UTF-16 encoding with a monkey-patch for `make_position_params()`
 - ESLint has auto-fix on save via `BufWritePre` autocmd
 
+### Treesitter Architecture (CRITICAL)
+
+**This config uses `romus204/tree-sitter-manager.nvim`, NOT `nvim-treesitter`.**
+
+The old `nvim-treesitter` (master branch) was archived and breaks on Neovim 0.12+
+(`require("nvim-treesitter.configs")` no longer exists). We migrated to
+tree-sitter-manager, a lightweight 0.12+ parser manager.
+
+- Config in `lua/rpn/plugins/treesitter.lua` via `require("tree-sitter-manager").setup()`
+- Requires the **`tree-sitter` CLI** (install with `brew install tree-sitter-cli` — NOT
+  `brew install tree-sitter`, which is the library only) plus git and a C compiler
+- Parsers compile to `~/.local/share/nvim/site/parser/*.dylib` (the native runtimepath);
+  highlight queries copy to `~/.local/share/nvim/site/queries/<lang>/`
+- Provides **parser management + highlighting only**. It does NOT provide treesitter
+  indentation or incremental selection — those were intentionally dropped in the migration
+  (Neovim's native filetype indent is used instead)
+- Auto-tagging is handled by `nvim-ts-autotag`, set up standalone via its own
+  `require("nvim-ts-autotag").setup()` in `treesitter.lua` (NOT via a nvim-treesitter option)
+- Commands: `:TSManager` (TUI), `:TSInstall <lang>`, `:TSUninstall <lang>`, `:TSUpdate`
+- Add parsers by appending to `ensure_installed` in `treesitter.lua`
+
+**Gotcha — missing highlight queries:** `tree-sitter-manager` installs each parser as an
+async chain (compile → copy queries). If that chain is interrupted, you can end up with a
+compiled parser but NO highlight queries, so the language parses but renders with no colors.
+Because the plugin's `is_installed` check only looks for the compiled parser, plain
+`:TSInstall <lang>` will NOT fix this (it skips already-compiled parsers). To recover, force a
+clean reinstall: `:TSUninstall <lang>` then `:TSInstall <lang>`. Languages Neovim bundles
+queries for (c, lua, markdown, query, vim, vimdoc) still highlight even when the plugin's copy
+is missing — JS/TS/yaml/bash/etc. do not, so they're where this bug shows up. To diagnose,
+compare `~/.local/share/nvim/site/parser/` against `~/.local/share/nvim/site/queries/`.
+
 ### Formatting vs LSP
 
 - **Formatting**: Uses conform.nvim (`lua/rpn/plugins/formatting.lua`)
@@ -60,6 +91,15 @@ nvim -c "Lazy update"
 
 # Install/update LSP servers and tools
 nvim -c "Mason"
+```
+
+### Treesitter Parsers
+
+```vim
+:TSManager           " Open the parser manager TUI
+:TSInstall <lang>    " Install a parser (skips if already compiled)
+:TSUninstall <lang>  " Remove a parser AND its queries (use before reinstalling)
+:TSUpdate            " Update parsers
 ```
 
 ### Formatting & Linting
@@ -129,6 +169,7 @@ Plugin-specific autocommands are in their respective config files. The main ones
 - **ESLint fix on save**: In `lua/rpn/plugins/lsp/lspconfig.lua` (line 117-122)
 - **LSP keymaps**: Attached via `LspAttach` autocmd in lspconfig.lua
 - **Linting triggers**: In `lua/rpn/plugins/linting.lua` on `BufEnter`, `BufWritePost`, `InsertLeave`
+- **Treesitter highlight**: tree-sitter-manager registers a `FileType` autocmd that calls `vim.treesitter.start` (set up inside `require("tree-sitter-manager").setup()` in `treesitter.lua`)
 
 ## File Organization Patterns
 
@@ -147,3 +188,6 @@ Plugin-specific autocommands are in their respective config files. The main ones
 4. **Plugin configs are lazy-loaded** - Use appropriate `event`, `cmd`, `keys`, or `ft` triggers
 5. **The `rpn` namespace** - All custom Lua modules are under `lua/rpn/`
 6. **Archived plugins** - Check `lua/_archived_plugins/` before adding similar functionality
+7. **Never use `nvim-treesitter`** - This config uses `tree-sitter-manager.nvim` (see Treesitter Architecture). Don't reintroduce `nvim-treesitter` or `require("nvim-treesitter.configs")` — it's broken on 0.12+
+8. **No treesitter indent/incremental-selection** - tree-sitter-manager doesn't provide them; this is intentional, don't try to re-add them through it
+9. **Treesitter "no colors" bug** - A parser without copied queries highlights nothing. Fix with `:TSUninstall <lang>` then `:TSInstall <lang>`, NOT a plain `:TSInstall` (see Treesitter Architecture gotcha)
