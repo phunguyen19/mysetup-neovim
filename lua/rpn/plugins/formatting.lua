@@ -25,7 +25,7 @@ return {
         graphql = { "prettier" },
         liquid = { "prettier" },
         lua = { "stylua" },
-        python = { "isort", "black" },
+        python = { "ruff_format" },
         go = { "gofmt" },
       },
       format_on_save = function(bufnr)

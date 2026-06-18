@@ -1,197 +1,212 @@
 return {
-	"neovim/nvim-lspconfig",
-	event = { "BufReadPre", "BufNewFile" },
-	dependencies = {
-		"hrsh7th/cmp-nvim-lsp",
-		{ "antosha417/nvim-lsp-file-operations", config = true },
-		{ "folke/neodev.nvim", opts = {} },
-	},
-	config = function()
-		-- Get default capabilities
-		local default_caps = vim.lsp.protocol.make_client_capabilities()
-		local capabilities = require("cmp_nvim_lsp").default_capabilities(default_caps)
-		capabilities.offsetEncoding = { "utf-16" }
+  "neovim/nvim-lspconfig",
+  event = { "BufReadPre", "BufNewFile" },
+  dependencies = {
+    "hrsh7th/cmp-nvim-lsp",
+    { "antosha417/nvim-lsp-file-operations", config = true },
+    { "folke/neodev.nvim",                   opts = {} },
+  },
+  config = function()
+    -- Get default capabilities
+    local default_caps = vim.lsp.protocol.make_client_capabilities()
+    local capabilities = require("cmp_nvim_lsp").default_capabilities(default_caps)
+    capabilities.offsetEncoding = { "utf-16" }
 
-		local keymap = vim.keymap
+    local keymap = vim.keymap
 
-		-- Set up LSP attach handlers
-		vim.api.nvim_create_autocmd("LspAttach", {
-			group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-			callback = function(ev)
-				local opts = { buffer = ev.buf, silent = true }
+    -- Set up LSP attach handlers
+    vim.api.nvim_create_autocmd("LspAttach", {
+      group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+      callback = function(ev)
+        local opts = { buffer = ev.buf, silent = true }
 
-				opts.desc = "Show LSP references"
-				keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)
+        opts.desc = "Show LSP references"
+        keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)
 
-				opts.desc = "Go to declaration"
-				keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+        opts.desc = "Go to declaration"
+        keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 
-				opts.desc = "Show LSP definitions"
-				keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
+        opts.desc = "Show LSP definitions"
+        keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
 
-				opts.desc = "Show LSP implementations"
-				keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
+        opts.desc = "Show LSP implementations"
+        keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
 
-				opts.desc = "Show LSP type definitions"
-				keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
+        opts.desc = "Show LSP type definitions"
+        keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
 
-				opts.desc = "See available code actions"
-				keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+        opts.desc = "See available code actions"
+        keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
 
-				opts.desc = "Smart rename"
-				keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+        opts.desc = "Smart rename"
+        keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 
-				opts.desc = "Show buffer diagnostics"
-				keymap.set("n", "<leader>lD", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
+        opts.desc = "Show buffer diagnostics"
+        keymap.set("n", "<leader>lD", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
 
-				opts.desc = "Show line diagnostics"
-				keymap.set("n", "<leader>ld", vim.diagnostic.open_float, opts)
+        opts.desc = "Show line diagnostics"
+        keymap.set("n", "<leader>ld", vim.diagnostic.open_float, opts)
 
-				opts.desc = "Go to previous diagnostic"
-				keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+        opts.desc = "Go to previous diagnostic"
+        keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
 
-				opts.desc = "Go to next diagnostic"
-				keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+        opts.desc = "Go to next diagnostic"
+        keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
-				opts.desc = "Show documentation for what is under cursor"
-				keymap.set("n", "K", vim.lsp.buf.hover, opts)
+        opts.desc = "Show documentation for what is under cursor"
+        keymap.set("n", "K", vim.lsp.buf.hover, opts)
 
-				opts.desc = "Restart LSP"
-				keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts)
-			end,
-		})
+        opts.desc = "Restart LSP"
+        keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts)
+      end,
+    })
 
-		-- Configure diagnostics
-		vim.diagnostic.config({
-			virtual_text = true,
-			float = {
-				source = true,
-			},
-			severity_sort = true,
-		})
+    -- Configure diagnostics
+    vim.diagnostic.config({
+      virtual_text = true,
+      float = {
+        source = true,
+      },
+      severity_sort = true,
+    })
 
-		-- Monkey-patch for encoding
-		do
-			local orig = vim.lsp.util.make_position_params
-			vim.lsp.util.make_position_params = function(context, encoding)
-				if not encoding then
-					local clients = vim.lsp.get_clients({ bufnr = 0 })
-					encoding = (clients[1] and clients[1].offset_encoding and clients[1].offset_encoding[1]) or "utf-16"
-				end
-				return orig(context, encoding)
-			end
-		end
+    -- Monkey-patch for encoding
+    do
+      local orig = vim.lsp.util.make_position_params
+      vim.lsp.util.make_position_params = function(context, encoding)
+        if not encoding then
+          local clients = vim.lsp.get_clients({ bufnr = 0 })
+          encoding = (clients[1] and clients[1].offset_encoding and clients[1].offset_encoding[1]) or "utf-16"
+        end
+        return orig(context, encoding)
+      end
+    end
 
-		local biome_util = require("rpn.utils.biome")
+    local biome_util = require("rpn.utils.biome")
 
-		-- Biome LSP: attaches only in projects with biome.json(c)
-		vim.lsp.config("biome", {
-			cmd = { "biome", "lsp-proxy" },
-			filetypes = {
-				"javascript",
-				"javascriptreact",
-				"javascript.jsx",
-				"typescript",
-				"typescriptreact",
-				"typescript.tsx",
-				"json",
-				"jsonc",
-				"css",
-			},
-			root_markers = { "biome.json", "biome.jsonc" },
-			capabilities = capabilities,
-		})
+    -- Biome LSP: attaches only in projects with biome.json(c)
+    vim.lsp.config("biome", {
+      cmd = { "biome", "lsp-proxy" },
+      filetypes = {
+        "javascript",
+        "javascriptreact",
+        "javascript.jsx",
+        "typescript",
+        "typescriptreact",
+        "typescript.tsx",
+        "json",
+        "jsonc",
+        "css",
+      },
+      root_markers = { "biome.json", "biome.jsonc" },
+      capabilities = capabilities,
+    })
 
-		vim.lsp.enable("biome")
+    vim.lsp.enable("biome")
 
-		-- Use the new vim.lsp.config API instead of lspconfig
-		vim.lsp.config("eslint", {
-			cmd = { "vscode-eslint-language-server", "--stdio" },
-			filetypes = {
-				"javascript",
-				"javascriptreact",
-				"javascript.jsx",
-				"typescript",
-				"typescriptreact",
-				"typescript.tsx",
-				"vue",
-				"svelte",
-			},
-			root_dir = function(bufnr, on_dir)
-				if biome_util.is_biome_project(bufnr) then
-					return
-				end
-				local name = vim.api.nvim_buf_get_name(bufnr)
-				local search_path = name ~= "" and vim.fs.dirname(name) or vim.uv.cwd()
-				local found = vim.fs.find({
-					".eslintrc",
-					".eslintrc.js",
-					".eslintrc.cjs",
-					".eslintrc.json",
-					".eslintrc.yaml",
-					".eslintrc.yml",
-					"eslint.config.js",
-					"eslint.config.mjs",
-					"eslint.config.cjs",
-					"eslint.config.ts",
-				}, { upward = true, path = search_path, type = "file" })
-				if #found > 0 then
-					on_dir(vim.fs.dirname(found[1]))
-				end
-			end,
-			settings = {
-				workingDirectory = { mode = "auto" },
-				codeActionOnSave = {
-					enable = true,
-					mode = "all",
-				},
-				useESLintClass = false,
-				useFlatConfig = false,
-				experimental = {
-					useFlatConfig = false,
-				},
-			},
-			capabilities = capabilities,
-		})
+    -- Use the new vim.lsp.config API instead of lspconfig
+    vim.lsp.config("eslint", {
+      cmd = { "vscode-eslint-language-server", "--stdio" },
+      filetypes = {
+        "javascript",
+        "javascriptreact",
+        "javascript.jsx",
+        "typescript",
+        "typescriptreact",
+        "typescript.tsx",
+        "vue",
+        "svelte",
+      },
+      root_dir = function(bufnr, on_dir)
+        if biome_util.is_biome_project(bufnr) then
+          return
+        end
+        local name = vim.api.nvim_buf_get_name(bufnr)
+        local search_path = name ~= "" and vim.fs.dirname(name) or vim.uv.cwd()
+        local found = vim.fs.find({
+          ".eslintrc",
+          ".eslintrc.js",
+          ".eslintrc.cjs",
+          ".eslintrc.json",
+          ".eslintrc.yaml",
+          ".eslintrc.yml",
+          "eslint.config.js",
+          "eslint.config.mjs",
+          "eslint.config.cjs",
+          "eslint.config.ts",
+        }, { upward = true, path = search_path, type = "file" })
+        if #found > 0 then
+          on_dir(vim.fs.dirname(found[1]))
+        end
+      end,
+      settings = {
+        workingDirectory = { mode = "auto" },
+        codeActionOnSave = {
+          enable = true,
+          mode = "all",
+        },
+        useESLintClass = false,
+        useFlatConfig = false,
+        experimental = {
+          useFlatConfig = false,
+        },
+      },
+      capabilities = capabilities,
+    })
 
-		-- Enable the eslint server
-		vim.lsp.enable("eslint")
+    -- Enable the eslint server
+    vim.lsp.enable("eslint")
 
-		-- Debug command
-		vim.api.nvim_create_user_command("ESLintDebug", function()
-			local bufnr = vim.api.nvim_get_current_buf()
-			local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "eslint" })
+    -- Configure pyright for Python
+    vim.lsp.config("pyright", {
+      capabilities = capabilities,
+      settings = {
+        python = {
+          analysis = {
+            autoSearchPaths = true,
+            useLibraryCodeForTypes = true,
+            diagnosticMode = "workspace",
+          },
+        },
+      },
+    })
+    vim.lsp.enable("pyright")
 
-			if #clients == 0 then
-				print("No ESLint client attached to this buffer")
-				return
-			end
+    -- Debug command
+    vim.api.nvim_create_user_command("ESLintDebug", function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "eslint" })
 
-			local client = clients[1]
-			print("ESLint client ID: " .. client.id)
-			print("Root directory: " .. client.config.root_dir)
-			print("Workspace folders: ")
-			for _, folder in ipairs(client.workspace_folders or {}) do
-				print("  - " .. folder.name)
-			end
+      if #clients == 0 then
+        print("No ESLint client attached to this buffer")
+        return
+      end
 
-			local possible_configs = {
-				".eslintrc",
-				".eslintrc.js",
-				".eslintrc.json",
-				".eslintrc.yaml",
-				".eslintrc.yml",
-			}
+      local client = clients[1]
+      print("ESLint client ID: " .. client.id)
+      print("Root directory: " .. client.config.root_dir)
+      print("Workspace folders: ")
+      for _, folder in ipairs(client.workspace_folders or {}) do
+        print("  - " .. folder.name)
+      end
 
-			print("Searching for ESLint config files:")
-			for _, config in ipairs(possible_configs) do
-				local config_path = client.config.root_dir .. "/" .. config
-				if vim.fn.filereadable(config_path) == 1 then
-					print("  - Found: " .. config_path)
-				else
-					print("  - Not found: " .. config_path)
-				end
-			end
-		end, {})
-	end,
+      local possible_configs = {
+        ".eslintrc",
+        ".eslintrc.js",
+        ".eslintrc.json",
+        ".eslintrc.yaml",
+        ".eslintrc.yml",
+      }
+
+      print("Searching for ESLint config files:")
+      for _, config in ipairs(possible_configs) do
+        local config_path = client.config.root_dir .. "/" .. config
+        if vim.fn.filereadable(config_path) == 1 then
+          print("  - Found: " .. config_path)
+        else
+          print("  - Not found: " .. config_path)
+        end
+      end
+    end, {})
+  end,
 }
