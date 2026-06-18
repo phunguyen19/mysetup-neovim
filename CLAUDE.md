@@ -42,8 +42,11 @@ tree-sitter-manager, a lightweight 0.12+ parser manager.
 - Parsers compile to `~/.local/share/nvim/site/parser/*.dylib` (the native runtimepath);
   highlight queries copy to `~/.local/share/nvim/site/queries/<lang>/`
 - Provides **parser management + highlighting only**. It does NOT provide treesitter
-  indentation or incremental selection — those were intentionally dropped in the migration
-  (Neovim's native filetype indent is used instead)
+  indentation or incremental selection — those were dropped from the plugin during the
+  migration (Neovim's native filetype indent is used instead). Incremental selection was
+  later re-added as a **native standalone module** built directly on `vim.treesitter`
+  (`lua/rpn/core/treesitter-incsel.lua`), NOT through tree-sitter-manager — see
+  "Incremental Selection (native)" below
 - Auto-tagging is handled by `nvim-ts-autotag`, set up standalone via its own
   `require("nvim-ts-autotag").setup()` in `treesitter.lua` (NOT via a nvim-treesitter option)
 - Commands: `:TSManager` (TUI), `:TSInstall <lang>`, `:TSUninstall <lang>`, `:TSUpdate`
@@ -58,6 +61,15 @@ clean reinstall: `:TSUninstall <lang>` then `:TSInstall <lang>`. Languages Neovi
 queries for (c, lua, markdown, query, vim, vimdoc) still highlight even when the plugin's copy
 is missing — JS/TS/yaml/bash/etc. do not, so they're where this bug shows up. To diagnose,
 compare `~/.local/share/nvim/site/parser/` against `~/.local/share/nvim/site/queries/`.
+
+**Incremental Selection (native):** Implemented in `lua/rpn/core/treesitter-incsel.lua`,
+loaded eagerly from `lua/rpn/core/init.lua`. It is built **directly on the core
+`vim.treesitter` API** (NOT tree-sitter-manager, NOT nvim-treesitter) and keeps a
+per-buffer stack of selected ranges. Keymaps: `<C-Space>` in normal mode starts a
+selection on the node under the cursor; `<C-Space>` in visual mode expands to the
+enclosing parent node; `<BS>` in visual mode shrinks back to the previous range
+(`<BS>` and `<C-@>`/`<Nul>` aliases are mapped for terminal Ctrl+Space compatibility).
+Safe in non-parsed buffers (no-op when there's no node).
 
 ### Formatting vs LSP
 
@@ -189,5 +201,5 @@ Plugin-specific autocommands are in their respective config files. The main ones
 5. **The `rpn` namespace** - All custom Lua modules are under `lua/rpn/`
 6. **Archived plugins** - Check `lua/_archived_plugins/` before adding similar functionality
 7. **Never use `nvim-treesitter`** - This config uses `tree-sitter-manager.nvim` (see Treesitter Architecture). Don't reintroduce `nvim-treesitter` or `require("nvim-treesitter.configs")` — it's broken on 0.12+
-8. **No treesitter indent/incremental-selection** - tree-sitter-manager doesn't provide them; this is intentional, don't try to re-add them through it
+8. **No treesitter indent via tree-sitter-manager** - it doesn't provide indent; don't try to re-add it through the plugin. Incremental selection IS available, but as a native module on `vim.treesitter` (`lua/rpn/core/treesitter-incsel.lua`) — never re-add it through tree-sitter-manager
 9. **Treesitter "no colors" bug** - A parser without copied queries highlights nothing. Fix with `:TSUninstall <lang>` then `:TSInstall <lang>`, NOT a plain `:TSInstall` (see Treesitter Architecture gotcha)
