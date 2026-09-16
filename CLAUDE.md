@@ -81,11 +81,13 @@ Safe in non-parsed buffers (no-op when there's no node).
 
 ### AI Assistant System
 
-This config supports multiple AI assistants via environment variables:
-
-- `NVIM_AI_ASSISTANT_COMPLETIONS`: Controls inline completions (`github_copilot` or `augment`)
-- `NVIM_AI_ASSISTANT_CHAT`: Controls chat interface (`github_copilot`, `augment`, or `claude`)
-- Configuration in `lua/rpn/plugins/ai-assistant.lua`
+- AI support is `ThePrimeagen/99` (`lua/rpn/plugins/99.lua`), lazy-loaded on its `<leader>9` keymaps
+- Provider is `ClaudeCodeProvider`, so the `claude` CLI must be on `PATH`; `<leader>9p` / `<leader>9m`
+  switch provider/model via Telescope
+- Completions inside the 99 prompt buffer (`#` for rules, `@` for files) route through nvim-cmp
+  (`completion.source = "cmp"`)
+- 99 writes scratch files to `./tmp` in the current project (upstream requires the temp dir to be
+  inside CWD)
 - The `augment_apply` plugin (`<leader>aa` in visual mode) applies code blocks with metadata headers like:
   ```
   path=/path/to/file mode=EDIT
