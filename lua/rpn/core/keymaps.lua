@@ -2,6 +2,7 @@
 vim.g.mapleader = " "
 
 local keymap = vim.keymap -- for conciseness
+local yank = require("rpn.core.yank")
 
 ---------------------
 -- General Keymaps -------------------
@@ -66,22 +67,30 @@ vim.keymap.set("n", "<leader>pa", function()
 	print("Copied: " .. path)
 end, { desc = "Copy absolute path of current file" })
 
-vim.keymap.set("n", "<leader>pdr", function()
-	local abs_dir = vim.fn.expand("%:p:h")
-	local rel_dir = vim.fn.fnamemodify(abs_dir, ":.")
-	vim.fn.setreg("+", rel_dir)
-	print("Copied: " .. rel_dir)
-end, { desc = "Copy relative directory of current file" })
+vim.keymap.set("n", "<leader>ya", function()
+	yank.yank_path(yank.get_buffer_absolute(), "absolute")
+end, { desc = "[Y]ank [A]bsolute path to clipboard" })
 
-vim.keymap.set("n", "<leader>pda", function()
-	local dir = vim.fn.expand("%:p:h")
-	vim.fn.setreg("+", dir)
-	print("Copied: " .. dir)
-end, { desc = "Copy absolute directory of current file" })
+vim.keymap.set("n", "<leader>yr", function()
+	yank.yank_path(yank.get_buffer_cwd_relative(), "relative")
+end, { desc = "[Y]ank [R]elative path to clipboard" })
 
--- <leader>po to copy :pwd
-vim.keymap.set("n", "<leader>po", function()
-	local cwd = vim.fn.getcwd()
-	vim.fn.setreg("+", cwd)
-	print("Copied: " .. cwd)
-end, { noremap = true, silent = true })
+vim.keymap.set("v", "<leader>ya", function()
+	yank.yank_visual_with_path(yank.get_buffer_absolute(), "absolute")
+end, { desc = "[Y]ank selection with [A]bsolute path" })
+
+vim.keymap.set("v", "<leader>yr", function()
+	yank.yank_visual_with_path(yank.get_buffer_cwd_relative(), "relative")
+end, { desc = "[Y]ank selection with [R]elative path" })
+
+vim.keymap.set("n", "<leader>yp", function()
+	yank.yank_path(yank.get_project_root(), "project")
+end, { desc = "[Y]ank [P]roject path to clipboard" })
+
+vim.keymap.set("n", "<leader>yda", function()
+	yank.yank_path(yank.get_buffer_dir_absolute(), "absolute directory")
+end, { desc = "[Y]ank [D]irectory [A]bsolute path to clipboard" })
+
+vim.keymap.set("n", "<leader>ydr", function()
+	yank.yank_path(yank.get_buffer_dir_cwd_relative(), "relative directory")
+end, { desc = "[Y]ank [D]irectory [R]elative path to clipboard" })
