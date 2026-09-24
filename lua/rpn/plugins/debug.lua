@@ -48,43 +48,31 @@ return {
 	config = function()
 		local dap = require("dap")
 
-		-- Setup Mason DAP adapter if available
-		local has_mason, mason_dap = pcall(require, "mason-nvim-dap")
-		if has_mason and mason_dap.setup then
-			mason_dap.setup({
-				ensure_installed = { "node-debug2-adapter" },
-			})
-		end
-
 		-- DAP javascript/typescript
-		dap.adapters.node2 = {
-			type = "executable",
-			command = "node",
-			args = {
-				vim.fn.stdpath("data") .. "/mason/packages/node-debug2-adapter/out/src/nodeDebug.js",
-			},
+		dap.adapters["pwa-node"] = {
+			type = "server",
+			host = "localhost",
+			port = "${port}",
+			executable = { command = "js-debug-adapter", args = { "${port}" } },
 		}
 		dap.configurations.typescript = {
 			{
 				name = "[NodeJS] Launch via npm:dev:debug",
-				type = "node2",
+				type = "pwa-node",
 				request = "launch",
 				cwd = vim.fn.getcwd(),
 				runtimeExecutable = "npm",
 				runtimeArgs = { "run-script", "dev:debug" },
-				port = 9229,
 				skipFiles = { "<node_internals>/**" },
 				sourceMaps = true,
-				protocol = "inspector",
 			},
 			{
 				name = "[NodeJS] Attach to process",
-				type = "node2",
+				type = "pwa-node",
 				request = "attach",
 				processId = require("dap.utils").pick_process,
 				cwd = vim.fn.getcwd(),
 				sourceMaps = true,
-				protocol = "inspector",
 			},
 		}
 		dap.configurations.javascript = dap.configurations.typescript

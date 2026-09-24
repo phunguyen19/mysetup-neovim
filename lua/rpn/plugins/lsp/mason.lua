@@ -47,6 +47,7 @@ return {
 			ensure_installed = {
 				"prettier", -- prettier formatter
 				"ruff", -- python linter + formatter
+				"js-debug-adapter", -- DAP adapter for node (pwa-node)
 			},
 		})
 	end,
