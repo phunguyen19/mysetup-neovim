@@ -19,10 +19,14 @@ return {
 				-- Use default config is better than "smart"
 				-- path_display = { "smart" },
 
-				-- Customize the width for the window
-				layout_strategy = "horizontal",
+				-- Top to bottom: prompt -> results -> preview
+				layout_strategy = "vertical",
+				sorting_strategy = "ascending",
 				layout_config = {
-					horizontal = { width = 0.8 },
+					vertical = {
+						mirror = true,
+						prompt_position = "top",
+					},
 				},
 			},
 		})
