@@ -9,7 +9,6 @@ local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local previewers = require("telescope.previewers")
 local transform_mod = require("telescope.actions.mt").transform_mod
-local utils = require("telescope._extensions.tmux.utils")
 local tmux_commands = require("telescope._extensions.tmux.tmux_commands")
 
 -- The marker goes on `display` only: `value` stays the raw session name / window id
@@ -36,7 +35,7 @@ local function identity(entry)
 end
 
 local function sessions(opts)
-	opts = utils.apply_default_layout(opts)
+	opts = opts or {}
 	local session_ids = tmux_commands.list_sessions({ format = tmux_commands.session_id_fmt })
 	local session_names = tmux_commands.list_sessions({ format = opts.entry_format or tmux_commands.session_name_fmt })
 	local formatted_to_real_session_map = {}
@@ -153,7 +152,7 @@ local custom_window_actions = transform_mod({
 })
 
 local function windows(opts)
-	opts = utils.apply_default_layout(opts)
+	opts = opts or {}
 
 	local window_ids = tmux_commands.list_windows({ format = tmux_commands.window_id_fmt })
 	local display_windows = tmux_commands.list_windows({ format = opts.entry_format or "#S: #W" })
