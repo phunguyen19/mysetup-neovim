@@ -21,13 +21,13 @@ return {
 
 				-- Top to bottom: prompt -> results -> preview
 				layout_strategy = "vertical",
-				sorting_strategy = "ascending",
-				layout_config = {
-					vertical = {
-						mirror = true,
-						prompt_position = "top",
-					},
-				},
+				-- sorting_strategy = "ascending",
+				-- layout_config = {
+				-- 	vertical = {
+				-- 		mirror = true,
+				-- 		prompt_position = "top",
+				-- 	},
+				-- },
 			},
 		})
 
