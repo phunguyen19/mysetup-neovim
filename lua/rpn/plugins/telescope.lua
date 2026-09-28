@@ -12,7 +12,19 @@ return {
 	config = function()
 		local telescope = require("telescope")
 
+		-- Upstream truncates the path column to 30 chars; widen it so paths stay whole
+		local full_path = { fname_width = 80 }
+
 		telescope.setup({
+			pickers = {
+				lsp_references = full_path,
+				lsp_definitions = full_path,
+				lsp_implementations = full_path,
+				lsp_type_definitions = full_path,
+				diagnostics = full_path,
+				quickfix = full_path,
+				loclist = full_path,
+			},
 			defaults = {
 				preview = true,
 
