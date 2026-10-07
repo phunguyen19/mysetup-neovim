@@ -15,9 +15,9 @@ return {
 				style = "vulgaris", -- Choose between 'vulgaris' (regular), 'multiplex' (greener), and 'light'
 				toggle_style_key = nil, -- Keybind to toggle theme style. Leave it nil to disable it, or set it to a string, e.g. "<leader>ts"
 				toggle_style_list = { "vulgaris", "multiplex", "light" }, -- List of styles to toggle between
-				transparent = true, -- Show/hide background
+				transparent = false, -- Show/hide background
 				dim_inactive = false, -- Dim inactive windows/buffers
-				term_colors = true, -- Change terminal color as per the selected theme style
+				term_colors = false, -- Change terminal color as per the selected theme style
 				ending_tildes = false, -- Show the end-of-buffer tildes. By default they are hidden
 				cmp_itemkind_reverse = false, -- reverse item kind highlights in cmp menu
 
