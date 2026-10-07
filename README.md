@@ -51,6 +51,7 @@ This repository contains my personal configuration files for NeoVim, organized w
 - Surround.vim for manipulating text surroundings
 - ToggleTerm for integrated terminal experience
 - Markdown preview for documentation writing
+- Things 3 integration: browse, complete, schedule and edit to-dos, capture TODOs from code ([docs](lua/rpn/things/README.md))
 
 ## Installation
 
@@ -117,6 +118,16 @@ This repository contains my personal configuration files for NeoVim, organized w
 - `<leader>gb` - Git blame
 - `<leader>gh` - Stage hunk
 - `<leader>gu` - Undo hunk
+
+### Things 3
+
+- `<leader>Tt` / `<leader>Ti` - Today / Inbox
+- `<leader>Tf` - Search open to-dos
+- `<leader>Ta` - Quick add to Inbox
+- `<leader>Tc` - Capture line/selection as a to-do
+- `g?` in a Things list - all list keys
+
+See [lua/rpn/things/README.md](lua/rpn/things/README.md) for setup and the full keymap list.
 
 ### Terminal
 

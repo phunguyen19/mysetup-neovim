@@ -71,6 +71,23 @@ enclosing parent node; `<BS>` in visual mode shrinks back to the previous range
 (`<BS>` and `<C-@>`/`<Nul>` aliases are mapped for terminal Ctrl+Space compatibility).
 Safe in non-parsed buffers (no-op when there's no node).
 
+### Things 3 Integration (CRITICAL)
+
+`lua/rpn/things/` (set up from `lua/rpn/core/init.lua`; keymaps under `<leader>T`, `g?` in a list buffer for its keys).
+
+- **Never touch the Things SQLite database** — not even read-only. Writes go through the `things:///`
+  URL scheme (`url.lua`), reads through Things' AppleScript dictionary via JXA (`jxa/read.js`)
+- `jxa/read.js` must fetch properties in bulk (`toDos.name()`), never per item — per-item Apple
+  Events take minutes on large lists (Logbook)
+- URLs are opened by `jxa/open.js` with the URL on **stdin** (keeps the auth token out of `ps`) and
+  `activates = false` (Things stays in the background). Don't switch to `open -g <url>`
+- Auth token: Keychain service `things3-nvim` (fallback `$THINGS_AUTH_TOKEN`); `:ThingsTokenCheck`
+  prints setup steps. Errors pass through `client.redact()`
+- URL scheme limits: no delete (cancel instead), checklists are write-only (AppleScript can't read
+  them), writes are fire-and-forget — views render optimistically and re-read after `refresh_delay_ms`
+- Projects appear among to-dos (areas, Today); items carry `kind` so writes use `update-project`
+- Tests: `nvim --headless --noplugin -u tests/minimal_init.lua -c "PlenaryBustedDirectory tests/things { minimal_init = 'tests/minimal_init.lua', sequential = true }"`
+
 ### Formatting vs LSP
 
 - **Formatting**: Uses conform.nvim (`lua/rpn/plugins/formatting.lua`)

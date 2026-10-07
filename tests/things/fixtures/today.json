@@ -1,0 +1,4 @@
+[
+  {"id":"AAA111","name":"Review settlement PR","status":"open","notes":"check idempotency","tags":"work, payments","deadline":"2026-10-04","when":"2026-10-05","completed":null,"projectId":"PRJ1","project":"Payments","areaId":"AR1","area":"Work"},
+  {"id":"BBB222","kind":"project","name":"Rotate API keys","status":"completed","notes":"","tags":"","deadline":null,"when":null,"completed":"2026-10-05","projectId":null,"project":null,"areaId":"AR1","area":"Work"}
+]

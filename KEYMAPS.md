@@ -310,6 +310,29 @@ _Uses default keymaps from nvim-surround_
 | `:FormatEnable` | Re-enable format-on-save |
 | `:ESLintDebug` | Debug ESLint configuration |
 
+## Things 3
+
+Setup and details: [lua/rpn/things/README.md](lua/rpn/things/README.md)
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>Tt` | Things: Today |
+| `n` | `<leader>Ti` | Things: Inbox |
+| `n` | `<leader>Tu` | Things: Upcoming |
+| `n` | `<leader>Tn` | Things: Anytime |
+| `n` | `<leader>Ts` | Things: Someday |
+| `n` | `<leader>Tl` | Things: Logbook |
+| `n` | `<leader>Tp` | Things: open a project |
+| `n` | `<leader>Tr` | Things: open an area |
+| `n` | `<leader>T#` | Things: open a tag |
+| `n` | `<leader>Tf` | Things: search open to-dos |
+| `n` | `<leader>Ta` | Things: quick add to Inbox |
+| `n`, `v` | `<leader>Tc` | Things: capture line / selection |
+| `n` | `<leader>TP` | Things: add project |
+| `n` | `<leader>To` | Things: show in app |
+
+In a Things list: `x` complete, `X` cancel, `u` undo, `s` schedule, `d` deadline, `t` tags, `m` move, `a`/`A` add, `<CR>` edit, `K` notes, `o` reveal, `R` refresh, `q` close, `g?` help. `x X s d t m` also work on a visual selection.
+
 ## Built-in Neovim Keymaps
 
 ### Essential Movement
@@ -412,6 +435,7 @@ _Uses default keymaps from nvim-surround_
 | `<leader>r` | Rename/Restart |
 | `<leader>s` | Splits/Window |
 | `<leader>t` | Tabs/Terminal/Todos |
+| `<leader>T` | Things 3 |
 | `<leader>w` | Session (Workspace) |
 | `<leader>x` | Diagnostics/Trouble |
 | `g*` | Go to / LSP navigation |
