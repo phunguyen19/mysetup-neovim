@@ -88,6 +88,15 @@ Safe in non-parsed buffers (no-op when there's no node).
 - Projects appear among to-dos (areas, Today); items carry `kind` so writes use `update-project`
 - Tests: `nvim --headless --noplugin -u tests/minimal_init.lua -c "PlenaryBustedDirectory tests/things { minimal_init = 'tests/minimal_init.lua', sequential = true }"`
 
+### Org / org-roam
+
+- `lua/rpn/plugins/orgmode.lua`: `nvim-orgmode/orgmode` + `chipsenkbeil/org-roam.nvim` (pinned tag)
+- Files live in `~/org` (agenda glob `~/org/**/*`, refile `~/org/refile.org`); roam notes in `~/org/roam`
+- Keymaps are plugin defaults: orgmode `<leader>oa` agenda / `<leader>oc` capture; roam prefix `<leader>n`
+  (`nf` find, `ni` insert, `nc` capture, `nl` backlinks, `nd…` dailies)
+- Orgmode installs and highlights its own `org` parser. Do NOT add `org` to tree-sitter-manager
+- `orgmode` is an nvim-cmp source
+
 ### Formatting vs LSP
 
 - **Formatting**: Uses conform.nvim (`lua/rpn/plugins/formatting.lua`)
