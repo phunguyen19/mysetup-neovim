@@ -11,6 +11,7 @@ return {
     -- refer to the configuration section below
     spec = {
       { "<leader>T", group = "Things" },
+      { "<leader>O", group = "Obsidian" },
     },
   },
 }

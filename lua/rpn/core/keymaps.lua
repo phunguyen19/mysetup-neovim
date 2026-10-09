@@ -94,3 +94,24 @@ end, { desc = "[Y]ank [D]irectory [A]bsolute path to clipboard" })
 vim.keymap.set("n", "<leader>ydr", function()
 	yank.yank_path(yank.get_buffer_dir_cwd_relative(), "relative directory")
 end, { desc = "[Y]ank [D]irectory [R]elative path to clipboard" })
+
+-- :OpenLink — open the URL/path under the cursor with the system handler
+vim.api.nvim_create_user_command("OpenLink", function()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2] + 1
+  -- prefer a full URL spanning the cursor (handles markdown [text](url) and punctuation)
+  local start = 1
+  while true do
+    local s, e = line:find("%a[%w+.-]*://[^%s<>\"'`%)%]]+", start)
+    if not s then break end
+    if col >= s and col <= e then
+      return vim.ui.open((line:sub(s, e):gsub("[.,;:!?]+$", "")))
+    end
+    start = e + 1
+  end
+  local target = vim.fn.expand("<cfile>")
+  if target == "" then
+    return vim.notify("No link under cursor", vim.log.levels.WARN)
+  end
+  vim.ui.open(target)
+end, { desc = "Open link under cursor" })
