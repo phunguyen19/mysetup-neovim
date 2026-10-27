@@ -194,7 +194,7 @@ return {
 
 Core keymaps are in `lua/rpn/core/keymaps.lua`. Plugin-specific keymaps are typically in their respective plugin config files.
 
-Resize keys use Option/Meta: `<M-h/j/k/l>` resize the current window, `<M-,>`/`<M-.>` the left sidebar, `<M-<>`/`<M->>` the right sidebar (`lua/rpn/core/resize.lua`, which finds sidebars by filetype). nvim-tree has `adaptive_size` off so manual widths stick.
+Resize keys use Option/Meta: `<M-h/j/k/l>` move the current window's border in that direction, tmux-style (expand toward it; at the screen edge the opposite border moves, so it shrinks), for any split or sidebar, `<M-,>`/`<M-.>` the left sidebar, `<M-<>`/`<M->>` the right sidebar (`lua/rpn/core/resize.lua`, which finds sidebars by filetype). nvim-tree has `adaptive_size` off so manual widths stick.
 
 Leader key: `<Space>`
 

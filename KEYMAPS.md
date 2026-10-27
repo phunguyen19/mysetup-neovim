@@ -24,10 +24,10 @@
 | `n`  | `<C-j>`      | Navigate to bottom split (vim-tmux-navigator) |
 | `n`  | `<C-k>`      | Navigate to top split (vim-tmux-navigator)    |
 | `n`  | `<C-l>`      | Navigate to right split (vim-tmux-navigator)  |
-| `n`  | `<M-h>`      | Window narrower                               |
-| `n`  | `<M-l>`      | Window wider                                  |
-| `n`  | `<M-j>`      | Window shorter                                |
-| `n`  | `<M-k>`      | Window taller                                 |
+| `n`  | `<M-h>`      | Move border left (expand left; shrink at edge) |
+| `n`  | `<M-l>`      | Move border right (expand right; shrink at edge) |
+| `n`  | `<M-j>`      | Move border down (expand down; shrink at edge) |
+| `n`  | `<M-k>`      | Move border up (expand up; shrink at edge)    |
 | `n`  | `<M-,>`      | Shrink left sidebar (nvim-tree)               |
 | `n`  | `<M-.>`      | Grow left sidebar (nvim-tree)                 |
 | `n`  | `<M-<>`      | Shrink right sidebar (outline/trouble)        |
