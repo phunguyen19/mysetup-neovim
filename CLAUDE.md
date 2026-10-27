@@ -219,6 +219,7 @@ Plugin-specific autocommands are in their respective config files. The main ones
 - LSP servers: Add to `ensure_installed` in `lua/rpn/plugins/lsp/mason.lua`
 - Formatters: Add to `formatters_by_ft` in `lua/rpn/plugins/formatting.lua`
 - Linters: Add to `linters_by_ft` in `lua/rpn/plugins/linting.lua`
+- Machine-specific settings: gitignored `lua/rpn/local.lua` (template: `lua/rpn/local.example.lua`). Obsidian vaults are `obsidian_vaults` there; obsidian.nvim is disabled when it's empty or missing
 
 ## Important Notes for Modifications
 

@@ -1,8 +1,6 @@
-local vaults = {
-	{ name = "Programming", path = "~/obsidian/Programming" },
-	{ name = "HexTrust", path = "~/obsidian/HexTrust" },
-	{ name = "HexTrust Projection", path = "~/dev/utils/hextrust-projection" },
-}
+-- vaults are per machine: set obsidian_vaults in lua/rpn/local.lua (see local.example.lua)
+local ok, machine = pcall(require, "rpn.local")
+local vaults = (ok and type(machine) == "table" and machine.obsidian_vaults) or {}
 
 -- load only for markdown files inside a vault (or via the keymaps below)
 local vault_patterns = {}
@@ -13,6 +11,7 @@ end
 return {
 	"epwalsh/obsidian.nvim",
 	version = "*",
+	enabled = #vaults > 0,
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		"hrsh7th/nvim-cmp",
