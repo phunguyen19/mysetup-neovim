@@ -26,6 +26,17 @@ keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" }) 
 keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- make split windows equal width & height
 keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" }) -- close current split window
 
+-- resize (Option/Meta keys; terminal must send Option as Esc+)
+local resize = require("rpn.core.resize")
+keymap.set("n", "<M-h>", "<cmd>vertical resize -4<CR>", { desc = "Window narrower" })
+keymap.set("n", "<M-l>", "<cmd>vertical resize +4<CR>", { desc = "Window wider" })
+keymap.set("n", "<M-j>", "<cmd>resize -2<CR>", { desc = "Window shorter" })
+keymap.set("n", "<M-k>", "<cmd>resize +2<CR>", { desc = "Window taller" })
+keymap.set("n", "<M-,>", function() resize.resize_sidebar("left", -4) end, { desc = "Left sidebar shrink" })
+keymap.set("n", "<M-.>", function() resize.resize_sidebar("left", 4) end, { desc = "Left sidebar grow" })
+keymap.set("n", "<M-lt>", function() resize.resize_sidebar("right", -4) end, { desc = "Right sidebar shrink" })
+keymap.set("n", "<M->>", function() resize.resize_sidebar("right", 4) end, { desc = "Right sidebar grow" })
+
 keymap.set("n", "<leader>to", "<cmd>tabnew<CR>", { desc = "Open new tab" }) -- open new tab
 keymap.set("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close current tab" }) -- close current tab
 keymap.set("n", "<leader>tn", "<cmd>tabn<CR>", { desc = "Go to next tab" }) --  go to next tab
