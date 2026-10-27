@@ -293,6 +293,17 @@ _Uses default keymaps from nvim-surround_
 |------|--------|-------------|
 | `n` | `<leader>oo` | Toggle outline |
 
+## Context Outline (`.context-outline/root.json`)
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>co` | Toggle Context Outline panel (`:ContextOutline left\|right` to switch side) |
+| `n` | `<CR>` (in panel) | Open the item's file at its lines (or fold/unfold a group) |
+| `n`/`v` | `<leader>yc` (in panel) | Yank context for the item(s) |
+| `n` | `o`/`za`, `l`, `h` (in panel) | Toggle, expand, collapse |
+| `n` | `D` (in panel) | More detail child items with Claude Code / Copilot (terminal) |
+| `n` | `K` / `R` / `q` (in panel) | Item details / reload / close |
+
 ## Formatting & Linting
 
 | Mode | Keymap | Description |
