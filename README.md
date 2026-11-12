@@ -51,6 +51,7 @@ This repository contains my personal configuration files for NeoVim, organized w
 - Surround.vim for manipulating text surroundings
 - ToggleTerm for integrated terminal experience
 - Markdown preview for documentation writing
+- Obsidian vault notes via obsidian.nvim (`<leader>O`)
 - Things 3 integration: browse, complete, schedule and edit to-dos, capture TODOs from code ([docs](lua/rpn/things/README.md))
 
 ## Installation
@@ -73,66 +74,488 @@ This repository contains my personal configuration files for NeoVim, organized w
 
 ## Key Mappings
 
+`<Space>` is the leader key.
+
 ### General
 
-- `<Space>` - Leader key
-- `jk` - Escape from insert mode
-- `<C-s>` - Save file
-- `<C-h/j/k/l>` - Navigate between splits
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `i` | `jk` | Exit insert mode |
+| `n` | `<leader>nh` | Clear search highlights |
+| `n` | `<leader>+` | Increment number under cursor |
+| `n` | `<leader>-` | Decrement number under cursor |
 
-### Augment AI Code Assistant
+### Window Management
 
-- `<leader>ac` - Open Augment chat (normal and visual mode)
-- `<leader>an` - Start a new Augment chat
-- `<leader>at` - Toggle Augment chat window
-- `<Ctrl-y>` - Accept Augment code suggestions
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>sv` | Split window vertically |
+| `n` | `<leader>sh` | Split window horizontally |
+| `n` | `<leader>se` | Make splits equal size |
+| `n` | `<leader>sx` | Close current split |
+| `n` | `<leader>sm` | Maximize/minimize a split (vim-maximizer) |
+| `n` | `<C-h>` | Navigate to left split (vim-tmux-navigator) |
+| `n` | `<C-j>` | Navigate to bottom split (vim-tmux-navigator) |
+| `n` | `<C-k>` | Navigate to top split (vim-tmux-navigator) |
+| `n` | `<C-l>` | Navigate to right split (vim-tmux-navigator) |
 
-### Telescope
+### Tab Management
 
-- `<leader>ff` - Find files
-- `<leader>fg` - Live grep (search in files)
-- `<leader>fb` - Browse buffers
-- `<leader>fh` - Search help tags
-- `<leader>fr` - Recent files
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>to` | Open new tab |
+| `n` | `<leader>tx` | Close current tab |
+| `n` | `<leader>tn` | Go to next tab |
+| `n` | `<leader>tp` | Go to previous tab |
+| `n` | `<leader>tf` | Open current buffer in new tab |
+| `n` | `<leader>t[1-9]` | Go to tab position (press number after `<leader>t`) |
+| `n` | `<leader>tm` | Move current tab to position (prompts for number) |
 
-### LSP
+### Path & Directory Operations
 
-- `gd` - Go to definition
-- `gr` - Find references
-- `K` - Show hover documentation
-- `<leader>ca` - Code actions
-- `<leader>rn` - Rename symbol
-- `[d` / `]d` - Navigate diagnostics
-- `<leader>f` - Format document
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>pr` | Copy relative path of current file |
+| `n` | `<leader>pa` | Copy absolute path of current file |
+| `n` | `<leader>pdr` | Copy relative directory of current file |
+| `n` | `<leader>pda` | Copy absolute directory of current file |
+| `n` | `<leader>po` | Copy current working directory (`:pwd`) |
 
-### File Navigation
+### File Explorer (nvim-tree)
 
-- `<leader>e` - Toggle file explorer
-- `<leader>h` - Harpoon mark file
-- `<leader>j` - Harpoon quick menu
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>ee` | Toggle file explorer |
+| `n` | `<leader>ef` | Toggle file explorer on current file |
+| `n` | `<leader>ec` | Collapse file explorer |
+| `n` | `<leader>er` | Refresh file explorer |
 
-### Git
+### Telescope (Fuzzy Finding)
 
-- `<leader>gs` - Git status (Fugitive)
-- `<leader>gd` - Git diff
-- `<leader>gb` - Git blame
-- `<leader>gh` - Stage hunk
-- `<leader>gu` - Undo hunk
+#### Files
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>ff` | Fuzzy find files in cwd |
+| `n` | `<leader>fu` | Fuzzy find including hidden and ignored files |
+| `n` | `<leader>fr` | Fuzzy find recent files |
+| `n` | `<leader>fb` | Browse buffers |
+| `n` | `<leader>fc` | Fuzzy search in current buffer |
+
+#### Search
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>fgg` | Live grep (search string in cwd) |
+| `n` | `<leader>fga` | Live grep with args |
+| `n` | `<leader>fk` | Find keymaps |
+| `n` | `<leader>fj` | Find in jumplist |
+| `n` | `<leader>ft` | Find todos |
+
+#### Git
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>fgs` | Telescope git status |
+| `n` | `<leader>fgb` | Telescope git buffer commits |
+
+#### Quickfix
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>fqq` | Find in quickfix list |
+| `n` | `<leader>fqh` | Find in quickfix history |
+
+### LSP (Language Server Protocol)
+
+| Mode | Keymap | Description | Location |
+|------|--------|-------------|----------|
+| `n` | `gR` | Show LSP references | lua/rpn/plugins/lsp/lspconfig.lua:24 |
+| `n` | `gD` | Go to declaration | lua/rpn/plugins/lsp/lspconfig.lua:27 |
+| `n` | `gd` | Show LSP definitions | lua/rpn/plugins/lsp/lspconfig.lua:30 |
+| `n` | `gi` | Show LSP implementations | lua/rpn/plugins/lsp/lspconfig.lua:33 |
+| `n` | `gt` | Show LSP type definitions | lua/rpn/plugins/lsp/lspconfig.lua:36 |
+| `n`, `v` | `<leader>ca` | See available code actions | lua/rpn/plugins/lsp/lspconfig.lua:39 |
+| `n` | `<leader>rn` | Smart rename | lua/rpn/plugins/lsp/lspconfig.lua:42 |
+| `n` | `<leader>lD` | Show buffer diagnostics | lua/rpn/plugins/lsp/lspconfig.lua:45 |
+| `n` | `<leader>ld` | Show line diagnostics | lua/rpn/plugins/lsp/lspconfig.lua:48 |
+| `n` | `[d` | Go to previous diagnostic | lua/rpn/plugins/lsp/lspconfig.lua:51 |
+| `n` | `]d` | Go to next diagnostic | lua/rpn/plugins/lsp/lspconfig.lua:54 |
+| `n` | `K` | Show documentation for what is under cursor | lua/rpn/plugins/lsp/lspconfig.lua:57 |
+| `n` | `<leader>rs` | Restart LSP | lua/rpn/plugins/lsp/lspconfig.lua:60 |
+
+### Git Operations
+
+#### Gitsigns (Hunks)
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `]h` | Next hunk |
+| `n` | `[h` | Previous hunk |
+| `n` | `<leader>hs` | Stage hunk |
+| `v` | `<leader>hs` | Stage hunk (visual selection) |
+| `n` | `<leader>hr` | Reset hunk |
+| `v` | `<leader>hr` | Reset hunk (visual selection) |
+| `n` | `<leader>hS` | Stage entire buffer |
+| `n` | `<leader>hR` | Reset entire buffer |
+| `n` | `<leader>hu` | Undo stage hunk |
+| `n` | `<leader>hp` | Preview hunk |
+| `n` | `<leader>hb` | Blame line (full) |
+| `n` | `<leader>hB` | Toggle current line blame |
+| `n` | `<leader>hd` | Diff this |
+| `n` | `<leader>hD` | Diff this ~ |
+| `o`, `x` | `ih` | Select hunk (text object) |
+
+#### LazyGit
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>gl` | Open LazyGit |
+
+#### Diffview
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>gdo` | Diffview: Open |
+| `n` | `<leader>gdc` | Diffview: Close |
+| `n` | `<leader>gdf` | Diffview: File History (current file) |
+| `n` | `<leader>gdF` | Diffview: Project History |
+
+### Terminal (ToggleTerm)
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<C-\>` | Toggle last terminal |
+| `n` | `<leader>tt` | Open terminal (float) |
+
+### Diagnostics & Trouble
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>xx` | Diagnostics (Trouble) |
+| `n` | `<leader>xX` | Buffer Diagnostics (Trouble) |
+| `n` | `<leader>cs` | Symbols (Trouble) |
+| `n` | `<leader>cl` | LSP Definitions/References (Trouble) |
+| `n` | `<leader>xL` | Location List (Trouble) |
+| `n` | `<leader>xQ` | Quickfix List (Trouble) |
+
+### Completion (nvim-cmp)
+
+_Active in Insert mode when completion menu is open_
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `i` | `<C-k>` | Previous suggestion |
+| `i` | `<C-j>` | Next suggestion |
+| `i` | `<C-b>` | Scroll docs up |
+| `i` | `<C-f>` | Scroll docs down |
+| `i` | `<C-Space>` | Show completion suggestions |
+| `i` | `<C-e>` | Close completion window |
+| `i` | `<CR>` | Confirm selection |
+
+### AI Assistants
+
+#### GitHub Copilot
+_Enabled when `NVIM_AI_ASSISTANT_CHAT=github_copilot`_
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>ac` | Copilot chat |
+| `n` | `<leader>at` | Copilot toggle chat |
+
+#### Augment
+_Enabled when `NVIM_AI_ASSISTANT_CHAT=augment`_
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>ac` | Augment chat |
+| `v` | `<leader>ac` | Augment chat with selection |
+| `n` | `<leader>an` | Augment new chat |
+| `n` | `<leader>at` | Augment toggle chat |
+| `i` | `<C-y>` | Accept Augment suggestion |
+| `v` | `<leader>aa` | Apply code block to file (augment_apply) |
+
+#### Claude Code
+_Enabled when `NVIM_AI_ASSISTANT_CHAT=claude`_
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>ac` | Toggle Claude |
+| `n` | `<leader>af` | Focus Claude |
+| `n` | `<leader>ar` | Resume Claude |
+| `n` | `<leader>aC` | Continue Claude |
+| `n` | `<leader>am` | Select Claude model |
+| `n` | `<leader>ab` | Add current buffer |
+| `v` | `<leader>as` | Send to Claude |
+| `n` | `<leader>as` | Add file (in file explorer) |
+| `n` | `<leader>aa` | Accept diff |
+| `n` | `<leader>ad` | Deny diff |
+
+### Debugging (nvim-dap)
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>da` | Run with Args |
+| `n` | `<leader>db` | Toggle Breakpoint |
+| `n` | `<leader>dB` | Breakpoint Condition |
+| `n` | `<leader>dc` | Run/Continue |
+| `n` | `<leader>dC` | Run to Cursor |
+| `n` | `<leader>dg` | Go to Line (No Execute) |
+| `n` | `<leader>di` | Step Into |
+| `n` | `<leader>dI` | Step Out |
+| `n` | `<leader>dj` | Down |
+| `n` | `<leader>dk` | Up |
+| `n` | `<leader>dl` | Run Last |
+| `n` | `<leader>do` | Step Over |
+| `n` | `<leader>dp` | Pause |
+| `n` | `<leader>dr` | Toggle REPL |
+| `n` | `<leader>ds` | Session |
+| `n` | `<leader>dx` | Terminate Session |
+| `n` | `<leader>dw` | Widgets (Show values) |
+| `n`, `v` | `<leader>du` | Toggle Dap UI |
+| `n`, `v` | `<leader>de` | Eval expression |
+
+### Code Editing
+
+#### Comment.nvim
+_Uses default keymaps from Comment.nvim_
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `gcc` | Toggle line comment |
+| `n` | `gbc` | Toggle block comment |
+| `v` | `gc` | Toggle comment (selection) |
+| `v` | `gb` | Toggle block comment (selection) |
+
+#### Substitute
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `s` | Substitute with motion |
+| `n` | `ss` | Substitute line |
+| `n` | `S` | Substitute to end of line |
+| `x` | `s` | Substitute in visual mode |
+
+#### Surround (nvim-surround)
+_Uses default keymaps from nvim-surround_
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `ys{motion}{char}` | Add surrounding |
+| `n` | `yss{char}` | Add surrounding to line |
+| `n` | `ds{char}` | Delete surrounding |
+| `n` | `cs{old}{new}` | Change surrounding |
+| `v` | `S{char}` | Add surrounding (visual) |
+
+### Session Management
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>wr` | Restore session for cwd |
+| `n` | `<leader>ws` | Save session |
+
+### Todo Comments
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `]t` | Next todo comment |
+| `n` | `[t` | Previous todo comment |
+
+### Code Outline
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>oo` | Toggle outline |
+
+### Context Outline (`.context-outline/root.json`)
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>co` | Toggle Context Outline panel (`:ContextOutline left\|right` to switch side) |
+| `n` | `<CR>` (in panel) | Open the item's file at its lines (or fold/unfold a group) |
+| `n`/`v` | `<leader>yc` (in panel) | Yank context for the item(s) |
+| `n` | `o`/`za`, `l`, `h` (in panel) | Toggle, expand, collapse |
+| `n` | `D` (in panel) | More detail child items with Claude Code / Copilot (terminal) |
+| `n` | `K` / `R` / `q` (in panel) | Item details / reload / close |
+
+### Formatting & Linting
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n`, `v` | `<leader>mp` | Format file or range |
+| `n` | `<leader>ll` | Trigger linting for current file |
+
+#### Commands
+
+| Command | Description |
+|---------|-------------|
+| `:Format` | Format current file/selection |
+| `:FormatDisable` | Disable format-on-save globally |
+| `:FormatDisable!` | Disable format-on-save for current buffer |
+| `:FormatEnable` | Re-enable format-on-save |
+| `:ESLintDebug` | Debug ESLint configuration |
 
 ### Things 3
 
-- `<leader>Tt` / `<leader>Ti` - Today / Inbox
-- `<leader>Tf` - Search open to-dos
-- `<leader>Ta` - Quick add to Inbox
-- `<leader>Tc` - Capture line/selection as a to-do
-- `g?` in a Things list - all list keys
+Setup and details: [lua/rpn/things/README.md](lua/rpn/things/README.md)
 
-See [lua/rpn/things/README.md](lua/rpn/things/README.md) for setup and the full keymap list.
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>Tt` | Things: Today |
+| `n` | `<leader>Ti` | Things: Inbox |
+| `n` | `<leader>Tu` | Things: Upcoming |
+| `n` | `<leader>Tn` | Things: Anytime |
+| `n` | `<leader>Ts` | Things: Someday |
+| `n` | `<leader>Tl` | Things: Logbook |
+| `n` | `<leader>Tp` | Things: open a project |
+| `n` | `<leader>Tr` | Things: open an area |
+| `n` | `<leader>T#` | Things: open a tag |
+| `n` | `<leader>Tf` | Things: search open to-dos |
+| `n` | `<leader>Ta` | Things: quick add to Inbox |
+| `n`, `v` | `<leader>Tc` | Things: capture line / selection |
+| `n` | `<leader>TP` | Things: add project |
+| `n` | `<leader>To` | Things: show in app |
 
-### Terminal
+In a Things list: `x` complete, `X` cancel, `u` undo, `s` schedule, `d` deadline, `t` tags, `m` move, `a`/`A` add, `<CR>` edit, `K` notes, `o` reveal, `R` refresh, `q` close, `g?` help. `x X s d t m` also work on a visual selection.
 
-- `<leader>t` - Toggle terminal
-- `<Esc>` - Exit terminal mode
+### Obsidian
+
+Enabled only when `obsidian_vaults` is set in `lua/rpn/local.lua` (see `lua/rpn/local.example.lua`). Loads for markdown files inside a vault or via these keymaps.
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<leader>Of` | Obsidian: find note |
+| `n` | `<leader>Os` | Obsidian: grep vault |
+| `n` | `<leader>On` | Obsidian: new note |
+| `n` | `<leader>Ot` | Obsidian: today's daily note |
+| `n` | `<leader>Oy` | Obsidian: yesterday's daily note |
+| `n` | `<leader>Ob` | Obsidian: backlinks |
+| `n` | `<leader>Ol` | Obsidian: links in note |
+| `n` | `<leader>Og` | Obsidian: tags |
+| `n` | `<leader>Ow` | Obsidian: switch vault |
+| `n` | `<leader>Oo` | Obsidian: open in app |
+| `n` | `<leader>Or` | Obsidian: rename note |
+| `n` | `<leader>Op` | Obsidian: paste image |
+| `v` | `<leader>Ol` | Obsidian: link selection |
+| `v` | `<leader>On` | Obsidian: link selection to new note |
+| `v` | `<leader>Oe` | Obsidian: extract to new note |
+
+In a vault note (buffer-local):
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `<CR>` | Smart action: follow `[[link]]`, open URL in browser, toggle checkbox |
+| `n` | `gf` | Follow `[[link]]` / open URL (falls back to normal `gf`) |
+| `n` | `<leader>ch` | Toggle checkbox |
+
+### Built-in Neovim Keymaps
+
+#### Essential Movement
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `h/j/k/l` | Left/Down/Up/Right |
+| `n` | `w` | Next word |
+| `n` | `b` | Previous word |
+| `n` | `e` | End of word |
+| `n` | `0` | Start of line |
+| `n` | `^` | First non-blank character |
+| `n` | `$` | End of line |
+| `n` | `gg` | First line |
+| `n` | `G` | Last line |
+| `n` | `{number}G` | Go to line number |
+| `n` | `%` | Jump to matching bracket |
+| `n` | `<C-u>` | Scroll up half page |
+| `n` | `<C-d>` | Scroll down half page |
+| `n` | `<C-o>` | Jump to previous location |
+| `n` | `<C-i>` | Jump to next location |
+
+#### Editing
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `i` | Insert before cursor |
+| `n` | `a` | Insert after cursor |
+| `n` | `I` | Insert at start of line |
+| `n` | `A` | Insert at end of line |
+| `n` | `o` | New line below |
+| `n` | `O` | New line above |
+| `n` | `u` | Undo |
+| `n` | `<C-r>` | Redo |
+| `n` | `dd` | Delete line |
+| `n` | `yy` | Yank (copy) line |
+| `n` | `p` | Paste after cursor |
+| `n` | `P` | Paste before cursor |
+| `v` | `y` | Yank selection |
+| `v` | `d` | Delete selection |
+| `v` | `c` | Change selection |
+| `n` | `.` | Repeat last change |
+
+#### Visual Mode
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `v` | Enter visual mode |
+| `n` | `V` | Enter visual line mode |
+| `n` | `<C-v>` | Enter visual block mode |
+| `v` | `>` | Indent selection |
+| `v` | `<` | Unindent selection |
+
+#### Search & Replace
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `/` | Search forward |
+| `n` | `?` | Search backward |
+| `n` | `n` | Next search result |
+| `n` | `N` | Previous search result |
+| `n` | `*` | Search word under cursor (forward) |
+| `n` | `#` | Search word under cursor (backward) |
+| `n` | `:%s/old/new/g` | Replace all in file |
+| `v` | `:s/old/new/g` | Replace in selection |
+
+#### Marks
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `m{a-z}` | Set local mark |
+| `n` | `m{A-Z}` | Set global mark |
+| `n` | `'{mark}` | Jump to mark line |
+| `n` | `` `{mark} `` | Jump to mark position |
+
+#### Registers
+
+| Mode | Keymap | Description |
+|------|--------|-------------|
+| `n` | `"{register}` | Use specific register |
+| `n` | `"+y` | Yank to system clipboard |
+| `n` | `"+p` | Paste from system clipboard |
+
+### Quick Reference by Prefix
+
+| Prefix | Category |
+|--------|----------|
+| `<leader>a` | AI Assistants |
+| `<leader>c` | Code Actions / LSP |
+| `<leader>d` | Debugging |
+| `<leader>e` | File Explorer |
+| `<leader>f` | Fuzzy Finding (Telescope) |
+| `<leader>g` | Git Operations |
+| `<leader>h` | Git Hunks |
+| `<leader>l` | LSP/Linting |
+| `<leader>m` | Formatting |
+| `<leader>n` | Miscellaneous |
+| `<leader>o` | Outline |
+| `<leader>p` | Path/Project |
+| `<leader>r` | Rename/Restart |
+| `<leader>s` | Splits/Window |
+| `<leader>t` | Tabs/Terminal/Todos |
+| `<leader>T` | Things 3 |
+| `<leader>O` | Obsidian |
+| `<leader>w` | Session (Workspace) |
+| `<leader>x` | Diagnostics/Trouble |
+| `g*` | Go to / LSP navigation |
+| `]` / `[` | Next/Previous navigation |
 
 ## Directory Structure
 
