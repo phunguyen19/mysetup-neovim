@@ -56,6 +56,10 @@ return {
 		},
 		picker = { name = "telescope.nvim" },
 		attachments = { img_folder = "_attachments" },
+		-- <CR>/gf on a URL opens it in the default browser
+		follow_url_func = function(url)
+			vim.ui.open(url)
+		end,
 		-- <CR>/gf on a [[link]] follows it; <leader>ch toggles a checkbox
 		mappings = {
 			["gf"] = {
